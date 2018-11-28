@@ -2,11 +2,33 @@
 
 namespace Animals.Library
 {
-    public class Dog
+    public class Dog : IAnimal
     {
         // fields - properties
-        public string Name{ get; set; }
-        public string Breed{ get; set; }
+
+        public int id { get; set; }
+
+        // pathological example
+        public string Name
+        { 
+            get{ return "Bob";} 
+            set{ Console.WriteLine("Inside property setter");} 
+        }
+
+        private string _breed;
+        public string Breed
+        { 
+            get {return _breed;}
+            set
+            {
+                if (value != null && value != "")
+                {
+                    _breed = value;
+
+                }
+
+            } 
+        }
 
 
         // property (with explitic backing field)
@@ -44,5 +66,16 @@ namespace Animals.Library
             Console.WriteLine("Woof");
         }
 
+        public void MakeSound()
+        {
+            Bark();
+        }
+
+        public void GoTo(string location)
+        {
+            // string interpolation syntax
+            string output = $"Walking to {location.ToLower()}.";
+            Console.WriteLine(output);
+        }
     }
 }

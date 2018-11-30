@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LINQAndTesting.Library
 {
@@ -10,30 +11,19 @@ namespace LINQAndTesting.Library
     /// two stratigies:
     /// - inheritance (MyCollection IS a list)
     /// - composition (MyCollection HAS a list)
+    /// 
+    /// make class generic with angle brackets in definition
+    ///   - defines type parameter in class. By convention,
+    ///   - T if there is only one.
     /// </remarks>
     /// 
-    public class MyCollection
+    public class MyCollection : MyGenericCollection<String>
     {
         // "readonly" just means you can't reassign "_list" to a different object
         // but you can still modify the object.
-        private readonly List<String> _list = new List<string>();
+        // private readonly List<String> _list = new List<string>(); no longer needed
 
-        public void Sort()
-        {
-            _list.Sort();
-        }
-
-        public void Add(string item)
-        {
-            _list.Add(item);
-        }
-
-        public int Length => _list.Count;
-
-        public string Get(int Index)
-        {
-            return _list[Index];
-        }
+        
 
         public string Longest()
         {
@@ -47,6 +37,43 @@ namespace LINQAndTesting.Library
                     retStr = str;
             }
             return retStr;
+        }
+
+        public double AverageLength()
+        {
+            return _list.Average(x => x.Length);
+        }
+        public IEnumerable<int> Lengths()
+        {
+            return _list.Select(x => x.Length);
+        }
+        public int NumberOfAs()
+        {
+            return _list.Count(x => x != null && x.Length > 0 && x[0] == 'a');
+
+            // "lambda expressions" passed as parameters
+        }
+
+        private static bool ContainsAVowel(string s)
+        {
+            return s.Any(x => "AEIOUaeiou".Contains(x));
+        }
+
+        public int NumberWithVowels()
+        {
+            return _list.Count(ContainsAVowel);
+        }
+
+        // LINQ (and IEnumerable itself) uses "deferred execution"
+
+        public string FirstAlphabetical()
+        {
+            var sorted = _list.OrderBy(x => x);
+            // just sets stuff up; no actual sorting yet
+
+            var first = sorted.First();
+            // actually runs the sort
+            return first;
         }
     }
 }

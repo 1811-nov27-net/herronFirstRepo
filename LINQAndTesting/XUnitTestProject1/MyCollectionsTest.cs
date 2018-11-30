@@ -40,6 +40,7 @@ namespace XUnitTestProject1
         [InlineData(new string[] { "a2", "ab" }, "a2")]
         [InlineData(new string[] { }, null)]
         [InlineData(new string[] { "a", "ab", null }, "ab")]
+        [InlineData(new string[] { "" }, "")]
 
         public void LongestShouldReturnLongest(string[] items, string expected)
         {
@@ -60,5 +61,15 @@ namespace XUnitTestProject1
             // step 1: write test that fails
             // step 2: write the code to make test pass
         }
+
+        [Fact]
+
+        public void EmptyShouldBeEmpty()
+        {
+            var coll = new MyCollection();
+            var actual = coll.Empty();
+            Assert.True(actual);
+        }
     }
 }
+

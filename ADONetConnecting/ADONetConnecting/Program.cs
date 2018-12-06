@@ -16,7 +16,9 @@ namespace ADONetConnecting
             // which will jam all that data into one string
 
             // never commit your connection strings to source control like git.
+            var ConnectionString = SecretConfiguration.ConnectionString;
 
+            var commandString = "SELECT * FROM Movies.Movie";
 
         }
     }

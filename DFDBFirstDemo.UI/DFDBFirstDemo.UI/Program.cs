@@ -89,5 +89,18 @@ namespace DFDBFirstDemo.UI
                 db.SaveChanges();
             }
         }
+
+        static void AccessWithRepo()
+        {
+            using (var db = new MoviesDBContext(options))
+            {
+                IMovieRepository movieRepo = new MovieRepository(db);
+
+                movieRepo.CreateMovie(new Movie { Name = "Harry Potter" }, "Action/Adventure");
+
+
+            }
+        }
+
     }
 }

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFDBFirstDemo.UI", "DFDBFir
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFDBFirstDemo.DataAccess", "EFDBFirstDemo.DataAccess\EFDBFirstDemo.DataAccess.csproj", "{75F0F73C-3E96-49A5-BBB6-2F926BFE171F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFDBFirstDemo.Testing", "EFDBFirstDemo.Testing\EFDBFirstDemo.Testing.csproj", "{BDF48A73-FB88-407C-8144-ECF2A662FFFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{75F0F73C-3E96-49A5-BBB6-2F926BFE171F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75F0F73C-3E96-49A5-BBB6-2F926BFE171F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75F0F73C-3E96-49A5-BBB6-2F926BFE171F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDF48A73-FB88-407C-8144-ECF2A662FFFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDF48A73-FB88-407C-8144-ECF2A662FFFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDF48A73-FB88-407C-8144-ECF2A662FFFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDF48A73-FB88-407C-8144-ECF2A662FFFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

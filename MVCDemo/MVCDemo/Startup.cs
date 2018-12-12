@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MVCDemo.DataAccess;
+using MVCDemo.Repositories;
 
 namespace MVCDemo
 {
@@ -19,6 +22,7 @@ namespace MVCDemo
             Configuration = configuration;
         }
 
+        // gets populated for you based on appsettings.json
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -31,6 +35,12 @@ namespace MVCDemo
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+
+            // whenever anyone needs an IMovieRepo, construct a MovieRepoDB for them
+            services.AddScoped<IMovieRepo, MovieRepoDB>();
+            // when anybody wants dbcontext MovieDBContext, get one
+            // using sql server and a connection string found in appsettings.json (aka Configuration)
+            services.AddDbContext<MovieDBContext>(optionsBulider => optionsBulider.UseSqlServer(Configuration.GetConnectionString("MoviesCodeFirstDB")));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

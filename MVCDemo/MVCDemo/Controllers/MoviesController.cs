@@ -15,7 +15,18 @@ namespace MVCDemo.Controllers
 
         // making this static is the quickest way for demo
         // to get data persisted across requests
-        public static MovieRepo Repo { get; set; } = new MovieRepo();
+
+        // public static MovieRepo Repo { get; set; } = new MovieRepo();
+
+        public IMovieRepo Repo { get; set; }
+
+
+        // the parameters of this constructor will be injected automatically
+        // based on what is setup in Startup.ConfigureServices.
+        public MoviesController(IMovieRepo repo)
+        {
+            Repo = repo;
+        }
 
         // GET: Movies
         // show a table of all the movies
@@ -134,7 +145,7 @@ namespace MVCDemo.Controllers
         // POST: Movies/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {

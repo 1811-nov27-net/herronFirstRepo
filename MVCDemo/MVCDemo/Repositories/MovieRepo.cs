@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MVCDemo.Repositories
 {
-    public class MovieRepo
+    public class MovieRepo : IMovieRepo
     {
         private List<Movie> _movies = new List<Movie>
         {
@@ -54,6 +54,11 @@ namespace MVCDemo.Repositories
         }
 
         internal void EditMovie(Movie movie)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IMovieRepo.EditMovie(Movie movie)
         {
             throw new NotImplementedException();
         }

@@ -64,14 +64,20 @@ namespace MVCDemo.Repositories
 
         public IEnumerable<Movie> GetAll()
         {
-            return _db.Movie.Include(m => m.CastMembers).Select(Map);
+            return _db.Movie.Include(m => m.CastJunctions).ThenInclude(mj => mj.Caste).Select(Map);
 
             // deferred - no network access yet.
         }
 
         public IEnumerable<Movie> GetAll(string cast)
         {
-            return _db.CastMember.Include(c => c.Movie).ThenInclude(m => m.CastMembers).Where(c => c.Name == cast).Select(c => Map(c.Movie));
+            return _db.CastMember
+                .Include(c => c.MovieJunctions)
+                    .ThenInclude(mj => mj.Movie)
+                        .ThenInclude(m => m.CastJunctions)
+                            .ThenInclude(cj => cj.Caste)
+                .Where(c => c.Name == cast)
+                .SelectMany(c => c.MovieJunctions.Select(j => Map(j.Movie)));
 
             //return _db.Movie.Include(m => m.CastMembers).Select(m => Map(m));
 
@@ -80,7 +86,7 @@ namespace MVCDemo.Repositories
 
         public Movie GetById(int id)
         {
-            return _db.Movie.Where(m => m.Id == id).Include(m => m.CastMembers).Select(m => Map(m)).First();
+            return _db.Movie.Where(m => m.Id == id).Include(m => m.CastJunctions).ThenInclude(cj => cj.Caste).Select(m => Map(m)).First();
 
         }
 
@@ -91,11 +97,16 @@ namespace MVCDemo.Repositories
                 Id = movie.Id,
                 Title = movie.Title,
                 ReleaseDate = movie.ReleaseDate,
-                Cast = movie.CastMembers.Select(c => c.Name).ToList()
+                Cast = movie.CastJunctions.Select(cj => cj.Caste.Name).ToList()
 
             };
         }
 
+
+        private int GetJunctionID(string MovieName, string CasteName)
+        {
+            return 0;
+        }
         private Data.Movie Map(Movie movie)
         {
             Data.Movie ret = new Data.Movie
@@ -106,7 +117,7 @@ namespace MVCDemo.Repositories
             };
             foreach (var cast in movie.Cast)
             {
-                ret.CastMembers.Add(new Data.CasteMember { Name = cast, Id = GetCastID(cast) });
+                ret.CastJunctions.Add(new Data.MovieCasteMemberJunction { });
             }
 
             return ret;

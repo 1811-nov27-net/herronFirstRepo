@@ -9,7 +9,7 @@ namespace MVCDemo.DataAccess
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public virtual Movie Movie { get; set; }
+        public virtual ICollection<MovieCasteMemberJunction> MovieJunctions { get; set; }
 
     }
 }

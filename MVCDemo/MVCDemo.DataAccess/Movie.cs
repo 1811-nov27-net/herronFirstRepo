@@ -16,6 +16,6 @@ namespace MVCDemo.DataAccess
         // [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime ReleaseDate { get; set; }
         
-        public virtual ICollection<CasteMember> CastMembers { get; set; }
+        public virtual ICollection<MovieCasteMemberJunction> CastJunctions { get; set; }
     }
 }

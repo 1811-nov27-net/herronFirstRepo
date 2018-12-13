@@ -87,7 +87,7 @@ namespace MVCDemo.Controllers
                 ModelState.AddModelError("Id", ex.Message);
                 return View();
             }
-            catch
+            catch 
             {
                 // if we get any exception, go back to Create view
                 // (ideally we would provide a useful error message when the error is not in ModelState)

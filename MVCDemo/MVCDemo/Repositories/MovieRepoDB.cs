@@ -18,38 +18,50 @@ namespace MVCDemo.Repositories
         public MovieRepoDB(Data.MovieDBContext db)
         {
             _db = db ?? throw new ArgumentException(nameof(db));
+
+            db.Database.EnsureCreated();
         }
 
         public void CreateMovie(Movie movie)
         {
-            throw new NotImplementedException();
+            _db.Add(Mapper.Map(movie, GetCasteMembers(movie)));
         }
 
         public bool DeleteMovie(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _db.Remove(_db.Movie.Include(m => m.Id == id));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            
         }
 
         public void EditMovie(Movie movie)
         {
-            throw new NotImplementedException();
+            _db.Entry(_db.Movie.Find(movie.Id)).CurrentValues.SetValues(Mapper.Map(movie, GetCasteMembers(movie)));
+        }
+
+        public ICollection<Data.CasteMember> GetCasteMembers(Movie movie)
+        {
+            return (ICollection<Data.CasteMember>) _db.CastMember.Include(c => c.Movie.Id == movie.Id);
         }
 
         public IEnumerable<Movie> GetAll()
         {
-            return _db.Movie.Include(m => m.CastMembers).Select(m => new Movie
-            {
-                Id = m.Id,
-                Title = m.Title,
-                Cast = m.CastMembers.Select(c => c.Name).ToList()
-            });
+            return _db.Movie.Include(m => m.CastMembers).Select(m => Mapper.Map(m));
 
             // deferred - no network access yet.
         }
 
         public Movie GetById(int id)
         {
-            throw new NotImplementedException();
+            return Mapper.Map(_db.Movie.Include(m => m.Id == id).First());
+
         }
     }
 }

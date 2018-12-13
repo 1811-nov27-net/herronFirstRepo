@@ -13,7 +13,7 @@ namespace MVCDemo.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            // using dataannotations for now
         }
     }
 }

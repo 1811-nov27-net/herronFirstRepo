@@ -64,7 +64,16 @@ namespace MVCDemo.Repositories
 
         public IEnumerable<Movie> GetAll()
         {
-            return _db.Movie.Include(m => m.CastMembers).Select(m => Map(m));
+            return _db.Movie.Include(m => m.CastMembers).Select(Map);
+
+            // deferred - no network access yet.
+        }
+
+        public IEnumerable<Movie> GetAll(string cast)
+        {
+            return _db.CastMember.Include(c => c.Movie).ThenInclude(m => m.CastMembers).Where(c => c.Name == cast).Select(c => Map(c.Movie));
+
+            //return _db.Movie.Include(m => m.CastMembers).Select(m => Map(m));
 
             // deferred - no network access yet.
         }

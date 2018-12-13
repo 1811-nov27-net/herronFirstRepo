@@ -64,11 +64,29 @@ namespace MVCDemo
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            // here in startup.configure is our global convention routing
             app.UseMvc(routes =>
             {
+
+                routes.MapRoute(
+                    name: "cast",
+                    template: "Actors/{name}",
+                    defaults: new { controller = "Cast", action = "Index" });
+                
+                // routes in order: first that matches is implemented
+                // one route is pre-defined
+                // always base URL (s/t like https://localhost:####/
+                //  we ignore this part
+                // this route says everything before the first slash is the controller
+                // everything before the next slash is understood as the name of the action method
+                // everything after that is put into a route parameter called id
+                // every route needs to set controller and action in some way
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                // no id is fine (optional, ?)
+                // no action, defaults to "Index"
+                // no controller defaults to "Home"
             });
         }
     }

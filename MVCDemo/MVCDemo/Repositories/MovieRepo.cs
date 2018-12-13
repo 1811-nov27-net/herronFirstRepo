@@ -62,5 +62,10 @@ namespace MVCDemo.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<Movie> GetAll(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

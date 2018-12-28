@@ -5,3 +5,4 @@ function compare(a, b) {
 }
 
 compare(5, "5")
+

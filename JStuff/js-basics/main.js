@@ -96,3 +96,6 @@ x = my_function;
 x.ser = 'stuff';
 
 
+// symbol type...?
+// unique ID's for things
+

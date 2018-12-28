@@ -36,9 +36,9 @@ function ajaxGet(
 
 document.addEventListener("DOMContentLoaded", () => {
     let jokeHeader = document.getElementById("jokeHeader");
-    let JokeBtn = document.getElementById("jokeBtn");
+    let jokeBtn = document.getElementById("jokeBtn");
 
-    JokeBtn.addEventListener("click", () => {
+    jokeBtn.addEventListener("click", () => {
         ajaxGet("http://api.icndb.com/jokes/random/", response => {
             let responseObj = JSON.parse(response);
             console.log(responseObj);

@@ -1,0 +1,32 @@
+{
+  "name": "BoPFinal",
+  "description": "Final Iteration of Beverage Order Process",
+  "main": "Main.xaml",
+  "dependencies": {
+    "UiPath.UIAutomation.Activities": "[18.4.3]",
+    "UiPath.System.Activities": "[18.4.2]",
+    "UiPath.Excel.Activities": "[2.5.0]",
+    "UiPath.Mail.Activities": "[1.3.0]",
+    "UiPath.WebAPI.Activities": "[1.3.0]",
+    "System.Linq": "[4.3.0]"
+  },
+  "schemaVersion": "3.2",
+  "studioVersion": "18.4.2.0",
+  "projectVersion": "1.0.6956.28426",
+  "runtimeOptions": {
+    "autoDispose": false,
+    "excludedLoggedData": [
+      "Private:*",
+      "*password*"
+    ]
+  },
+  "projectType": "Workflow",
+  "libraryOptions": {
+    "includeOriginalXaml": false,
+    "privateWorkflows": []
+  },
+  "arguments": {
+    "input": [],
+    "output": []
+  }
+}

@@ -932,14 +932,14 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Daniel\\.nuget\\packages\\": {}
+    "C:\\Users\\heatw\\.nuget\\packages\\": {}
   },
   "project": {
     "restore": {
       "projectUniqueName": "BevrageOrderProcess",
       "projectName": "BevrageOrderProcess",
       "projectPath": "C:\\revature\\herronFirstRepo\\UiPath\\BevrageOrderProcess\\.local",
-      "packagesPath": "C:\\Users\\Daniel\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\heatw\\.nuget\\packages\\",
       "outputPath": "C:\\revature\\herronFirstRepo\\UiPath\\BevrageOrderProcess\\.local"
     },
     "frameworks": {

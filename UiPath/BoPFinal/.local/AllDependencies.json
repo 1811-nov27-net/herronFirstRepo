@@ -1142,7 +1142,7 @@
   "projectFileDependencyGroups": {
     "": [],
     ".NETFramework,Version=v4.6.1": [
-      "System.Linq >= 4.3.0",
+      "System.Linq >= 4.3.0 <= 4.3.0",
       "UiPath.Excel.Activities >= 2.5.0 <= 2.5.0",
       "UiPath.Mail.Activities >= 1.3.0 <= 1.3.0",
       "UiPath.System.Activities >= 18.4.2 <= 18.4.2",
@@ -1167,7 +1167,7 @@
           "System.Linq": {
             "include": "Runtime",
             "target": "Package",
-            "version": "[4.3.0, )"
+            "version": "[4.3.0, 4.3.0]"
           },
           "UiPath.Excel.Activities": {
             "include": "Runtime",

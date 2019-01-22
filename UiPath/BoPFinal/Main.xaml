@@ -73,7 +73,7 @@
   </TextExpression.ReferencesForImplementation>
   <Sequence DisplayName="Main Sequence" sap2010:WorkflowViewState.IdRef="Sequence_2">
     <Sequence.Variables>
-      <Variable x:TypeArguments="x:String" Default="Orders.xlsx" Name="OrderSheet" />
+      <Variable x:TypeArguments="x:String" Default="C:\revature\herronFirstRepo\UiPath\BoPFinal\Orders.xlsx" Name="OrderSheet" />
       <Variable x:TypeArguments="sd:DataTable" Name="dt_Order" />
       <Variable x:TypeArguments="x:Int32" Name="Retry" />
       <Variable x:TypeArguments="x:String" Name="URL" />
@@ -89,7 +89,10 @@
       <Variable x:TypeArguments="njl:JObject" Name="config" />
       <Variable x:TypeArguments="x:String" Name="orderNum" />
       <Variable x:TypeArguments="scg:IEnumerable(ui:QueueItem)" Name="qItems" />
+      <Variable x:TypeArguments="scg:List(x:String)" Default="[new List(Of string)]" Name="OutOfStock" />
     </Sequence.Variables>
+    <ui:GetQueueItems Duration="{x:Null}" From="{x:Null}" Priority="{x:Null}" Reference="{x:Null}" Skip="{x:Null}" TimeoutMS="{x:Null}" To="{x:Null}" Top="{x:Null}" DisplayName="Get Queue Items" FilterStrategy="StartsWith" sap2010:WorkflowViewState.IdRef="GetQueueItems_3" QueueItemStates="All" QueueName="[qName]" Result="[qItems]" />
+    <ui:DeleteQueueItems TimeoutMS="{x:Null}" DisplayName="Delete Queue Items" sap2010:WorkflowViewState.IdRef="DeleteQueueItems_2" QueueItems="[qItems]" />
     <Sequence DisplayName="Retrieve Assets" sap2010:WorkflowViewState.IdRef="Sequence_1">
       <ui:GetRobotAsset TimeoutMS="{x:Null}" AssetName="Retry" DisplayName="Get Retry" sap2010:WorkflowViewState.IdRef="GetRobotAsset_1">
         <ui:GetRobotAsset.Value>
@@ -121,50 +124,53 @@
             <ActivityAction.Argument>
               <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
             </ActivityAction.Argument>
-            <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[reqFields]">
-              <ui:ForEach.Body>
-                <ActivityAction x:TypeArguments="x:String">
-                  <ActivityAction.Argument>
-                    <DelegateInArgument x:TypeArguments="x:String" Name="item" />
-                  </ActivityAction.Argument>
-                  <If Condition="[row(item).ToString = &quot;&quot;]" sap2010:WorkflowViewState.IdRef="If_2">
-                    <If.Then>
-                      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_10">
-                        <Assign sap2010:WorkflowViewState.IdRef="Assign_8">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:Object">[row("Status")]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:Object">["Failed"]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <Assign sap2010:WorkflowViewState.IdRef="Assign_9">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:Object">[row("Notes")]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:String">[row("Notes").ToString + "No " + item + ", "]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                      </Sequence>
-                    </If.Then>
-                    <If.Else>
-                      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_9">
-                        <ui:AddQueueItem ServiceBaseAddress="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Add Queue Item" sap2010:WorkflowViewState.IdRef="AddQueueItem_1" Priority="Normal" QueueType="[qName]">
-                          <ui:AddQueueItem.ItemInformation>
-                            <InArgument x:TypeArguments="x:String" x:Key="Product">[row("Product").ToString]</InArgument>
-                            <InArgument x:TypeArguments="x:String" x:Key="Quantity">[row("Quantity").ToString]</InArgument>
-                            <InArgument x:TypeArguments="x:String" x:Key="Type">[row("Type").ToString]</InArgument>
-                            <InArgument x:TypeArguments="x:Int32" x:Key="RowNum">[dt_Order.Rows.IndexOf(row)]</InArgument>
-                          </ui:AddQueueItem.ItemInformation>
-                        </ui:AddQueueItem>
-                        <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Added item to queue" />
-                      </Sequence>
-                    </If.Else>
-                  </If>
-                </ActivityAction>
-              </ui:ForEach.Body>
-            </ui:ForEach>
+            <Sequence sap2010:WorkflowViewState.IdRef="Sequence_18">
+              <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[reqFields]">
+                <ui:ForEach.Body>
+                  <ActivityAction x:TypeArguments="x:String">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="x:String" Name="item" />
+                    </ActivityAction.Argument>
+                    <If Condition="[row(item).ToString = &quot;&quot;]" sap2010:WorkflowViewState.IdRef="If_2">
+                      <If.Then>
+                        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_10">
+                          <Assign sap2010:WorkflowViewState.IdRef="Assign_8">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Object">[row("Status")]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Object">["Failed"]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap2010:WorkflowViewState.IdRef="Assign_9">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Object">[row("Notes")]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:String">[row("Notes").ToString + "No " + item + ", "]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                    </If>
+                  </ActivityAction>
+                </ui:ForEach.Body>
+              </ui:ForEach>
+              <If Condition="[row(&quot;Status&quot;).ToString = &quot;&quot;]" sap2010:WorkflowViewState.IdRef="If_9">
+                <If.Then>
+                  <Sequence sap2010:WorkflowViewState.IdRef="Sequence_9">
+                    <ui:AddQueueItem ServiceBaseAddress="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Add Queue Item" sap2010:WorkflowViewState.IdRef="AddQueueItem_1" Priority="Normal" QueueType="[qName]">
+                      <ui:AddQueueItem.ItemInformation>
+                        <InArgument x:TypeArguments="x:String" x:Key="Product">[row("Product").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="Quantity">[row("Quantity").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="Type">[row("Type").ToString]</InArgument>
+                        <InArgument x:TypeArguments="x:Int32" x:Key="RowNum">[dt_Order.Rows.IndexOf(row)]</InArgument>
+                      </ui:AddQueueItem.ItemInformation>
+                    </ui:AddQueueItem>
+                  </Sequence>
+                </If.Then>
+              </If>
+            </Sequence>
           </ActivityAction>
         </ui:ForEachRow.Body>
       </ui:ForEachRow>
@@ -203,35 +209,53 @@
         <InArgument x:TypeArguments="x:String" x:Key="QueueName">[qName]</InArgument>
         <InArgument x:TypeArguments="njl:JObject" x:Key="config">[config]</InArgument>
         <OutArgument x:TypeArguments="x:String" x:Key="OrderNum">[orderNum]</OutArgument>
+        <OutArgument x:TypeArguments="scg:List(x:String)" x:Key="OutOfStock">[OutOfStock]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
     <ui:GetQueueItems Duration="{x:Null}" From="{x:Null}" Priority="{x:Null}" Reference="{x:Null}" Skip="{x:Null}" TimeoutMS="{x:Null}" To="{x:Null}" Top="{x:Null}" DisplayName="Get Queue Items" FilterStrategy="StartsWith" sap2010:WorkflowViewState.IdRef="GetQueueItems_1" QueueItemStates="Failed" QueueName="[qName]" Result="[qItems]" />
-    <ui:ForEach x:TypeArguments="ui:QueueItem" CurrentIndex="{x:Null}" DisplayName="For Each" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[qItems]">
-      <ui:ForEach.Body>
-        <ActivityAction x:TypeArguments="ui:QueueItem">
-          <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="ui:QueueItem" Name="qitem" />
-          </ActivityAction.Argument>
-          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_14">
-            <Assign sap2010:WorkflowViewState.IdRef="Assign_12">
-              <Assign.To>
-                <OutArgument x:TypeArguments="sd:DataRow">[dt_Order.Rows(Int32.Parse(qitem.Output("RowNum").ToString))]</OutArgument>
-              </Assign.To>
-            </Assign>
-          </Sequence>
-        </ActivityAction>
-      </ui:ForEach.Body>
-    </ui:ForEach>
-    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dt_Order]" DisplayName="For Each Row" sap2010:WorkflowViewState.IdRef="ForEachRow_4">
-      <ui:ForEachRow.Body>
-        <ActivityAction x:TypeArguments="sd:DataRow">
-          <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
-          </ActivityAction.Argument>
-          <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_16">
-            <If Condition="[row(&quot;Status&quot;).ToString = &quot;&quot;]" sap2010:WorkflowViewState.IdRef="If_7">
-              <If.Then>
-                <If Condition="[success]" sap2010:WorkflowViewState.IdRef="If_6">
+    <ui:CommentOut DisplayName="Comment Out" sap2010:WorkflowViewState.IdRef="CommentOut_3">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap2010:WorkflowViewState.IdRef="Sequence_21">
+          <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each" sap2010:WorkflowViewState.IdRef="ForEach`1_3" Values="[OutOfStock]">
+            <ui:ForEach.Body>
+              <ActivityAction x:TypeArguments="x:String">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="x:String" Name="item" />
+                </ActivityAction.Argument>
+                <Sequence sap2010:WorkflowViewState.IdRef="Sequence_14">
+                  <Assign sap2010:WorkflowViewState.IdRef="Assign_12">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Object">[dt_Order.Rows(Int32.Parse(qitem.Output("RowNum").ToString))("Status")]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Object">["Failed"]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign sap2010:WorkflowViewState.IdRef="Assign_15">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Object">[dt_Order.Rows(Int32.Parse(qitem.Output("RowNum").ToString))("Notes")]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Object">["Out of Stock"]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                </Sequence>
+              </ActivityAction>
+            </ui:ForEach.Body>
+          </ui:ForEach>
+        </Sequence>
+      </ui:CommentOut.Body>
+    </ui:CommentOut>
+    <If Condition="[success]" sap2010:WorkflowViewState.IdRef="If_10">
+      <If.Then>
+        <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dt_Order]" DisplayName="For Each Row" sap2010:WorkflowViewState.IdRef="ForEachRow_4">
+          <ui:ForEachRow.Body>
+            <ActivityAction x:TypeArguments="sd:DataRow">
+              <ActivityAction.Argument>
+                <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+              </ActivityAction.Argument>
+              <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                <If Condition="[not OutOfStock.Contains(row(&quot;Product&quot;).ToString)]" sap2010:WorkflowViewState.IdRef="If_7">
                   <If.Then>
                     <Sequence sap2010:WorkflowViewState.IdRef="Sequence_15">
                       <Assign sap2010:WorkflowViewState.IdRef="Assign_13">
@@ -252,28 +276,58 @@
                       </Assign>
                     </Sequence>
                   </If.Then>
+                  <If.Else>
+                    <Sequence sap2010:WorkflowViewState.IdRef="Sequence_22">
+                      <Assign sap2010:WorkflowViewState.IdRef="Assign_16">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Object">[row("Status")]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Object">["Failed"]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <Assign sap2010:WorkflowViewState.IdRef="Assign_17">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Object">[row("Notes")]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Object">["Out of Stock"]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                    </Sequence>
+                  </If.Else>
                 </If>
-              </If.Then>
-            </If>
-          </Sequence>
-        </ActivityAction>
-      </ui:ForEachRow.Body>
-    </ui:ForEachRow>
-    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" Body="[&quot;UiBot placed an order at &quot; + URL + &quot; for a total cost of &quot; + orderTotal +&quot;. The order number is &quot; + orderNum]" DisplayName="Send SMTP Mail Message" Email="[EmailUser]" EnableSSL="True" From="DoNotReply@UiBot.com" sap2010:WorkflowViewState.IdRef="SendMail_2" IsBodyHtml="False" Name="UiBot" Password="[new System.Net.NetworkCredential(&quot;&quot;,EmailPW).Password]" Port="587" SecureConnection="Auto" Server="stmp-mail.outlook.com" Subject="Order Placed by UiBot" To="[dt_Address.Rows(0)(&quot;eMail&quot;).ToString]">
-      <ui:SendMail.Files>
-        <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
-      </ui:SendMail.Files>
-    </ui:SendMail>
-    <ui:WriteRange AddHeaders="False" DataTable="[dt_Order]" DisplayName="Write Range" sap2010:WorkflowViewState.IdRef="WriteRange_2" SheetName="Orders" StartingCell="A1" WorkbookPath="[OrderSheet]" />
-    <sads:DebugSymbol.Symbol>dzVDOlxyZXZhdHVyZVxoZXJyb25GaXJzdFJlcG9cVWlQYXRoXEJvUEZpbmFsXE1haW4ueGFtbG9KA40CDgIBAUw0TEECAQNYNFhAAgECXQVqEAMBgQFrBasBEAIBX6wBBbIBFAIBWLMBBbkBEAIBTroBBcEBDgIBSsIBBc8BHQIBNNABBdAB0wICATDRAQXgARICASvhAQWFAhUCARqGAgWKAhMCAQuLAgWLAsoBAgEEXgdiGgMBkgFjB2caAwGOAWgHaNsBAwGIAWkHadgBAwGCAW04bXkCAWBvB3UWAgF6dgeqARcCAWGsAS+sAT0CAV2vAQuvAToCAVysAZEBrAGaAQIBW6wBqAGsAbYBAgFZtwEHtwGUAQIBVLgBB7gBvwECAU+/ATK/AUECAU28ATO8ATsCAUvEATzEAUECAUjKAUHKAUkCAUbFAT3FAUQCAUTLAULLAUkCAULNAULNAUwCAUDIAULIAUsCAT7MAULMAUoCATzHAUzHAVUCATrCAbEBwgHDAQIBOcYBRcYBUAIBN8kBRMkBUAIBNdABtQLQAb4CAgEy0AHGAtAB0AICATHRAZQB0QGeAQIBL9cBC90BFgIBLOEBNuEBQgIBKecBC4ICFgIBG4YC1QSGAocFAgEZhgJghgLvAQIBFYYCugSGAtEEAgEUhgK/AoYC1QICAROGApsChgKoAgIBEYYC9QOGAvoDAgEQhgKaBIYCsQQCAQ+GAqwDhgLvAwIBDYYCmwOGAqIDAgEMiwKnAYsCqwECAQqLAjGLAj0CAQiLApEBiwKZAQIBB4sCuQGLAscBAgEFYDJgOQMBlAFeOF4/AwGTAWUzZTgDAZABYzhjQgMBjwFoPWhSAwGNAWjLAWjYAQMBiwFotgFowQEDAYkBaT1pTwMBhwFpyAFp1QEDAYUBabMBab4BAwGDAW8xbz0CAX9yDXI8AgF+b48Bb5cBAgF9b6UBb7MBAgF7djh2RAIBeHwNpwEaAgFitwFUtwFgAgFXtwEgtwEtAgFVuAGvAbgBvAECAVK4AZkBuAGjAQIBUNgBDdwBFgIBLegBDYECEgIBHHyYAXylAQIBdoIBE6QBGAIBY9oBO9oBeAIBLugBG+gBTgIBHeoBEf8BFgIBHoIBIYIBRgIBZIQBF5UBIgIBb5gBF6IBIgIBZeoBH+oBKgIBH+wBFf0BIAIBIYUBGYwBIgIBc40BGZQBIgIBcJkBGaABKwIBaKEBGaEBiAECAWbtARf0ASACASb1ARf8ASACASKKAUSKAU4CAXWHAUWHAVQCAXSSAUSSAXECAXKPAUWPAVMCAXGZAccBmQHQAQIBbZ4BUp4BbgIBbJsBVJsBbQIBa5wBVZwBbwIBap0BUZ0BZwIBaaEBcKEBhQECAWfyAULyAU0CASjvAUPvAVICASf6AUL6AUwCAST3AUP3AVECASM=</sads:DebugSymbol.Symbol>
+              </Sequence>
+            </ActivityAction>
+          </ui:ForEachRow.Body>
+        </ui:ForEachRow>
+      </If.Then>
+    </If>
+    <ui:GetQueueItems Duration="{x:Null}" From="{x:Null}" Priority="{x:Null}" Reference="{x:Null}" Skip="{x:Null}" TimeoutMS="{x:Null}" To="{x:Null}" Top="{x:Null}" DisplayName="Get Queue Items" FilterStrategy="StartsWith" sap2010:WorkflowViewState.IdRef="GetQueueItems_2" QueueItemStates="All" QueueName="[qName]" Result="[qItems]" />
+    <ui:DeleteQueueItems TimeoutMS="{x:Null}" DisplayName="Delete Queue Items" sap2010:WorkflowViewState.IdRef="DeleteQueueItems_1" QueueItems="[qItems]" />
+    <If Condition="[success]" sap2010:WorkflowViewState.IdRef="If_8">
+      <If.Then>
+        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_17">
+          <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" Body="[&quot;UiBot placed an order at &quot; + URL + &quot; for a total cost of &quot; + orderTotal +&quot;. The order number is &quot; + orderNum]" DisplayName="Send SMTP Mail Message" Email="[EmailUser]" EnableSSL="True" From="Heatwaveqc@gmail.com" sap2010:WorkflowViewState.IdRef="SendMail_2" IsBodyHtml="False" Name="UiBot" Password="[new System.Net.NetworkCredential(&quot;&quot;,EmailPW).Password]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Order Placed by UiBot" To="[dt_Address.Rows(0)(&quot;eMail&quot;).ToString]">
+            <ui:SendMail.Files>
+              <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
+            </ui:SendMail.Files>
+          </ui:SendMail>
+          <ui:WriteRange AddHeaders="True" DataTable="[dt_Order]" DisplayName="Write Range" sap2010:WorkflowViewState.IdRef="WriteRange_2" SheetName="Orders" StartingCell="A1" WorkbookPath="[OrderSheet]" />
+        </Sequence>
+      </If.Then>
+    </If>
+    <sads:DebugSymbol.Symbol>dzVDOlxyZXZhdHVyZVxoZXJyb25GaXJzdFJlcG9cVWlQYXRoXEJvUEZpbmFsXE1haW4ueGFtbIIBSgPBAg4CAQFMNExtAgEEWDRYQAIBA1w+XFUCAQJeBV7QAgMBqQFfBV+dAQMBpwFgBW0QAwGSAW4FsQEQAgFvsgEFuAEUAgFouQEFvwEQAgFewAEFxwEOAgFayAEF1gEdAgFC1wEF1wHTAgIBPtgBBfgBFQIBPfkBBbECCgIBJbICBbIC0AICASGzAgWzAp0BAgEftAIFvwIKAgEFXrICXrsCAwGrAV7DAl7NAgMBqgFfkAFfmgEDAagBYQdlGgMBowFmB2oaAwGfAWsHa9sBAwGZAWwHbNgBAwGTAXA4cHkCAXByB3gWAwGLAXkHsAEXAgFxsgEvsgE9AgFttQELtQE6AgFssgGRAbIBmgECAWuyAagBsgG2AQIBab0BB70BlAECAWS+AQe+Ab8BAgFfxQEyxQFBAgFdwgEzwgE7AgFbygE8ygFBAgFY0AFB0AFJAgFWywE9ywFEAgFU0QFC0QFJAgFS0wFC0wFMAgFQ1AFO1AFaAgFOzgFCzgFLAgFM0gFC0gFKAgFKzQFMzQFVAgFIyAGxAcgBwwECAUfMAUXMAVACAUXPAUTPAVACAUPXAbUC1wG+AgIBQNcBxgLXAdACAgE/+QET+QEeAgEm+wEJrwIZAgEosgKyArICuwICASOyAsMCsgLNAgIBIrMCkAGzApoBAgEgtAITtAIeAgEGtgIJvQIUAgEIYzJjOQMBpQFhOGE/AwGkAWgzaDgDAaEBZjhmQgMBoAFrPWtSAwGeAWvLAWvYAQMBnAFrtgFrwQEDAZoBbD1sTwMBmAFsyAFs1QEDAZYBbLMBbL4BAwGUAXIxcj0DAZABdQ11PAMBjwFyjwFylwEDAY4BcqUBcrMBAwGMAXk4eUQDAYkBfw2tARgCAXK9AVS9AWACAWe9ASC9AS0CAWW+Aa8BvgG8AQIBYr4BmQG+AaMBAgFg+wE6+wFGAgE7gQIPrAIaAgEptwILuwIZAgEQvAILvALPAQIBCYABD54BHAIBfZ8BD6wBFAIBc4ICEasCFgIBKrcC2AS3AooFAgEetwJmtwL1AQIBGrcCvQS3AtQEAgEZtwLFArcC2wICARi3AqECtwKuAgIBFrcC+wO3AoAEAgEVtwKgBLcCtAQCARS3ArIDtwL1AwIBErcCoQO3AqgDAgERvAKsAbwCsAECAQ+8Aja8AkICAQ28ApYBvAKeAQIBDLwCvgG8AswBAgEKgAGaAYABpwEDAYcBhgEVmwEaAgF+nwEdnwFQAgF0oQETqgEeAgF1ggIfggJdAgErhAIVlQIgAgEzmAIVqQIgAgEshgEjhgFIAgF/iAEZmQEkAwGAAaIBFakBJwIBdoUCF4wCIAIBOI0CF5QCIAIBNJkCF6ACIAIBMKECF6gCIAIBLYkBG5ABJAMBhAGRARuYASQDAYEBogHDAaIBzAECAXunAU6nAWoCAXqkAVCkAWkCAXmlAVGlAWsCAXimAU2mAWMCAXeKAkKKAk0CATqHAkOHAlICATmSAkKSAkwCATaPAkOPAlECATWeAkKeAkwCATKbAkObAlICATGmAkKmAlICAS+jAkOjAlECAS6OAUaOAVADAYYBiwFHiwFWAwGFAZYBRpYBcwMBgwGTAUeTAVUDAYIB</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="GetQueueItems_3" sap:VirtualizedContainerService.HintSize="242,22" />
+      <sap2010:ViewStateData Id="DeleteQueueItems_2" sap:VirtualizedContainerService.HintSize="242,22" />
       <sap2010:ViewStateData Id="GetRobotAsset_1" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="GetRobotAsset_2" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="GetRobotCredential_1" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="GetRobotCredential_2" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -298,18 +352,25 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="464,432" />
+      <sap2010:ViewStateData Id="ForEach`1_1" sap:VirtualizedContainerService.HintSize="480,566" />
       <sap2010:ViewStateData Id="AddQueueItem_1" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="210,61" />
-      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="232,247">
+      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="222,146">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="521,432" />
-      <sap2010:ViewStateData Id="ForEach`1_1" sap:VirtualizedContainerService.HintSize="537,566" />
-      <sap2010:ViewStateData Id="ForEachRow_1" sap:VirtualizedContainerService.HintSize="200,51">
+      <sap2010:ViewStateData Id="If_9" sap:VirtualizedContainerService.HintSize="480,294" />
+      <sap2010:ViewStateData Id="Sequence_18" sap:VirtualizedContainerService.HintSize="502,1024">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ForEachRow_1" sap:VirtualizedContainerService.HintSize="532,1172">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -317,14 +378,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_6" sap:VirtualizedContainerService.HintSize="287,266">
+      <sap2010:ViewStateData Id="Sequence_6" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ReadRange_2" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="ReadRange_2" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -334,7 +396,7 @@
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="ReadTextFile_1" sap:VirtualizedContainerService.HintSize="314,59" />
       <sap2010:ViewStateData Id="DeserializeJson`1_1" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -342,8 +404,8 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="287,60" />
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -351,9 +413,10 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="GetQueueItems_1" sap:VirtualizedContainerService.HintSize="287,22" />
+      <sap2010:ViewStateData Id="GetQueueItems_1" sap:VirtualizedContainerService.HintSize="242,22" />
       <sap2010:ViewStateData Id="Assign_12" sap:VirtualizedContainerService.HintSize="242,60" />
-      <sap2010:ViewStateData Id="Sequence_14" sap:VirtualizedContainerService.HintSize="264,184">
+      <sap2010:ViewStateData Id="Assign_15" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="Sequence_14" sap:VirtualizedContainerService.HintSize="200,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -361,26 +424,51 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ForEach`1_2" sap:VirtualizedContainerService.HintSize="287,194" />
+      <sap2010:ViewStateData Id="ForEach`1_3" sap:VirtualizedContainerService.HintSize="287,193" />
+      <sap2010:ViewStateData Id="Sequence_21" sap:VirtualizedContainerService.HintSize="309,541">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="CommentOut_3" sap:VirtualizedContainerService.HintSize="242,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="Assign_13" sap:VirtualizedContainerService.HintSize="242,60" />
       <sap2010:ViewStateData Id="Assign_14" sap:VirtualizedContainerService.HintSize="242,60" />
       <sap2010:ViewStateData Id="Sequence_15" sap:VirtualizedContainerService.HintSize="264,284">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="If_6" sap:VirtualizedContainerService.HintSize="464,432" />
-      <sap2010:ViewStateData Id="If_7" sap:VirtualizedContainerService.HintSize="589,580" />
-      <sap2010:ViewStateData Id="Sequence_16" sap:VirtualizedContainerService.HintSize="611,704">
+      <sap2010:ViewStateData Id="Assign_16" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="Assign_17" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="Sequence_22" sap:VirtualizedContainerService.HintSize="264,284">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="If_7" sap:VirtualizedContainerService.HintSize="553,432" />
+      <sap2010:ViewStateData Id="Sequence_16" sap:VirtualizedContainerService.HintSize="575,556">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ForEachRow_4" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="ForEachRow_4" sap:VirtualizedContainerService.HintSize="200,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -388,7 +476,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="SendMail_2" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="If_10" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -396,7 +484,9 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="WriteRange_2" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="GetQueueItems_2" sap:VirtualizedContainerService.HintSize="242,22" />
+      <sap2010:ViewStateData Id="DeleteQueueItems_1" sap:VirtualizedContainerService.HintSize="242,22" />
+      <sap2010:ViewStateData Id="SendMail_2" sap:VirtualizedContainerService.HintSize="200,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -404,14 +494,37 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="309,1423">
+      <sap2010:ViewStateData Id="WriteRange_2" sap:VirtualizedContainerService.HintSize="200,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_17" sap:VirtualizedContainerService.HintSize="222,266">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="349,1503" />
+      <sap2010:ViewStateData Id="If_8" sap:VirtualizedContainerService.HintSize="242,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="264,1222">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="304,1302" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

@@ -25,6 +25,7 @@
     <x:Property Name="QueueName" Type="InArgument(x:String)" />
     <x:Property Name="config" Type="InArgument(njl:JObject)" />
     <x:Property Name="OrderNum" Type="OutArgument(x:String)" />
+    <x:Property Name="OutOfStock" Type="OutArgument(scg:List(x:String))" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
@@ -84,6 +85,7 @@
       <AssemblyReference>UiPath.Mail</AssemblyReference>
       <AssemblyReference>UiPath.Studio.Plugin.Workflow</AssemblyReference>
       <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>System.Collections.Immutable</AssemblyReference>
       <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
@@ -106,7 +108,7 @@
           <FlowStep x:Name="__ReferenceID1" sap2010:WorkflowViewState.IdRef="FlowStep_1">
             <TryCatch sap2010:WorkflowViewState.IdRef="TryCatch_1">
               <TryCatch.Try>
-                <ui:OpenBrowser UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Open Browser" Hidden="False" sap2010:WorkflowViewState.IdRef="OpenBrowser_1" NewSession="True" Private="False" Url="[url]">
+                <ui:OpenBrowser UiBrowser="{x:Null}" BrowserType="IE" DisplayName="Open Browser" Hidden="False" sap2010:WorkflowViewState.IdRef="OpenBrowser_1" NewSession="True" Private="False" Url="[url]">
                   <ui:OpenBrowser.Body>
                     <ActivityAction x:TypeArguments="x:Object">
                       <ActivityAction.Argument>
@@ -115,6 +117,7 @@
                       <Sequence DisplayName="Main Order Process" sap2010:WorkflowViewState.IdRef="Sequence_4">
                         <Sequence.Variables>
                           <Variable x:TypeArguments="scg:IEnumerable(ui:QueueItem)" Name="QueueItems" />
+                          <Variable x:TypeArguments="scg:List(x:String)" Default="[new List(Of string)]" Name="TempOOS" />
                         </Sequence.Variables>
                         <Sequence DisplayName="Log In" sap2010:WorkflowViewState.IdRef="Sequence_1">
                           <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text username" sap2010:WorkflowViewState.IdRef="SetValue_1" Text="[shopUsername]">
@@ -176,7 +179,7 @@
                             </If>
                           </Sequence>
                         </DoWhile>
-                        <ui:GetQueueItems Duration="{x:Null}" From="{x:Null}" Priority="{x:Null}" Reference="{x:Null}" Skip="{x:Null}" TimeoutMS="{x:Null}" To="{x:Null}" Top="{x:Null}" DisplayName="Get Queue Items" FilterStrategy="StartsWith" sap2010:WorkflowViewState.IdRef="GetQueueItems_1" QueueItemStates="All" QueueName="[QueueName]" Result="[QueueItems]" />
+                        <ui:GetQueueItems Duration="{x:Null}" From="{x:Null}" Priority="{x:Null}" Reference="{x:Null}" Skip="{x:Null}" TimeoutMS="{x:Null}" To="{x:Null}" Top="{x:Null}" DisplayName="Get Queue Items" FilterStrategy="StartsWith" sap2010:WorkflowViewState.IdRef="GetQueueItems_1" QueueItemStates="New, InProgress, Retried" QueueName="[QueueName]" Result="[QueueItems]" />
                         <ui:ForEach x:TypeArguments="ui:QueueItem" CurrentIndex="{x:Null}" DisplayName="For Each" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[QueueItems]">
                           <ui:ForEach.Body>
                             <ActivityAction x:TypeArguments="ui:QueueItem">
@@ -186,186 +189,171 @@
                               <Sequence sap2010:WorkflowViewState.IdRef="Sequence_6">
                                 <Sequence.Variables>
                                   <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="row" />
-                                  <Variable x:TypeArguments="ui:QueueItem" Name="TransItem" />
                                 </Sequence.Variables>
-                                <ui:GetQueueItem ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Get Transaction Item" QueueType="[QueueName]" TransactionItem="[TransItem]" sap2010:WorkflowViewState.IdRef="GetQueueItem_2" />
                                 <Assign sap2010:WorkflowViewState.IdRef="Assign_7">
                                   <Assign.To>
                                     <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[row]</OutArgument>
                                   </Assign.To>
                                   <Assign.Value>
-                                    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[TransItem.Output]</InArgument>
+                                    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">[item.SpecificContent]</InArgument>
                                   </Assign.Value>
                                 </Assign>
-                                <If Condition="[row(&quot;Status&quot;).ToString = &quot;&quot;]" sap2010:WorkflowViewState.IdRef="If_3">
-                                  <If.Then>
-                                    <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_3">
-                                      <Sequence.Variables>
-                                        <Variable x:TypeArguments="x:Boolean" Name="qtyGood" />
-                                      </Sequence.Variables>
-                                      <ui:NavigateTo Browser="{x:Null}" DisplayName="Navigate To" sap2010:WorkflowViewState.IdRef="NavigateTo_1" Url="[url +&quot;home&quot;]" />
-                                      <ui:SelectItem ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Select Product Type" sap2010:WorkflowViewState.IdRef="SelectItem_1" Item="[row(&quot;Type&quot;).ToString]">
-                                        <ui:SelectItem.Items>
-                                          <scg:List x:TypeArguments="x:String" Capacity="4">
-                                            <x:String>Select Product Type</x:String>
-                                            <x:String>Beverages</x:String>
-                                            <x:String>Seasonings</x:String>
-                                          </scg:List>
-                                        </ui:SelectItem.Items>
-                                        <ui:SelectItem.Target>
-                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="6f9fdb469794e3cf04c56afaa4bd379e" Selector="&lt;webctrl id='productType' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
-                                        </ui:SelectItem.Target>
-                                      </ui:SelectItem>
-                                      <ui:SelectItem DelayAfter="{x:Null}" DelayBefore="{x:Null}" ContinueOnError="True" DisplayName="Select Product" sap2010:WorkflowViewState.IdRef="SelectItem_2" Item="[row(&quot;Product&quot;).ToString]">
-                                        <ui:SelectItem.Items>
-                                          <scg:List x:TypeArguments="x:String" Capacity="32">
-                                            <x:String>Select Product</x:String>
-                                            <x:String>Chai</x:String>
-                                            <x:String>Chang</x:String>
-                                            <x:String>Guarana Fantastica</x:String>
-                                            <x:String>Sasquatch Ale</x:String>
-                                            <x:String>Steeleye Stout</x:String>
-                                            <x:String>Cote de Blaye</x:String>
-                                            <x:String>Chartreuse verte</x:String>
-                                            <x:String>Ipoh Coffee</x:String>
-                                            <x:String>Laughing Lumberjack Lager</x:String>
-                                            <x:String>Outback Lager</x:String>
-                                            <x:String>Rhonbrau Klosterbier</x:String>
-                                            <x:String>Lakkalikoori</x:String>
-                                            <x:String>Aniseed Syrup</x:String>
-                                            <x:String>Chef Anton's Cajun Seasoning</x:String>
-                                            <x:String>Chef Anton's Gumbo Mix</x:String>
-                                            <x:String>Grandma's Boysenberry Spread</x:String>
-                                            <x:String>Northwoods Cranberry Sauce</x:String>
-                                            <x:String>Genen Shouyu</x:String>
-                                            <x:String>Gula Malacca</x:String>
-                                            <x:String>Sirop d'erable</x:String>
-                                            <x:String>Veggie Spread</x:String>
-                                            <x:String>Louisiana Fiery Hot Pepper Sauce</x:String>
-                                            <x:String>Louisiana Hot Spiced Okra</x:String>
-                                            <x:String>Original Frankfurter Grune SoBe</x:String>
-                                          </scg:List>
-                                        </ui:SelectItem.Items>
-                                        <ui:SelectItem.Target>
-                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="edcb85939674f5bca7e01986ad4b0378" Selector="&lt;webctrl id='productsList' tag='SELECT' /&gt;" TimeoutMS="300" WaitForReady="INTERACTIVE" />
-                                        </ui:SelectItem.Target>
-                                      </ui:SelectItem>
-                                      <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" ContinueOnError="True" DisplayName="Click View Details" sap2010:WorkflowViewState.IdRef="Click_4" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
-                                        <ui:Click.CursorPosition>
-                                          <ui:CursorPosition Position="Center">
-                                            <ui:CursorPosition.OffsetX>
-                                              <InArgument x:TypeArguments="x:Int32" />
-                                            </ui:CursorPosition.OffsetX>
-                                            <ui:CursorPosition.OffsetY>
-                                              <InArgument x:TypeArguments="x:Int32" />
-                                            </ui:CursorPosition.OffsetY>
-                                          </ui:CursorPosition>
-                                        </ui:Click.CursorPosition>
-                                        <ui:Click.Target>
-                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="14af16e758ab0457db441d99cd2ba4df" Selector="&lt;webctrl tag='INPUT' /&gt;" TimeoutMS="300" WaitForReady="INTERACTIVE" />
-                                        </ui:Click.Target>
-                                      </ui:Click>
-                                      <ui:SelectItem DelayAfter="{x:Null}" DelayBefore="{x:Null}" ContinueOnError="True" DisplayName="Select Item 'SELECT  product_quantit...'" sap2010:WorkflowViewState.IdRef="SelectItem_3" Item="[row(&quot;Quantity&quot;).ToString]">
-                                        <ui:SelectItem.Items>
-                                          <scg:List x:TypeArguments="x:String" Capacity="32">
-                                            <x:String>1</x:String>
-                                            <x:String>2</x:String>
-                                            <x:String>3</x:String>
-                                            <x:String>4</x:String>
-                                            <x:String>5</x:String>
-                                            <x:String>6</x:String>
-                                            <x:String>7</x:String>
-                                            <x:String>8</x:String>
-                                            <x:String>9</x:String>
-                                            <x:String>10</x:String>
-                                            <x:String>11</x:String>
-                                            <x:String>12</x:String>
-                                            <x:String>13</x:String>
-                                            <x:String>14</x:String>
-                                            <x:String>15</x:String>
-                                            <x:String>16</x:String>
-                                            <x:String>17</x:String>
-                                            <x:String>18</x:String>
-                                            <x:String>19</x:String>
-                                            <x:String>20</x:String>
-                                          </scg:List>
-                                        </ui:SelectItem.Items>
-                                        <ui:SelectItem.Target>
-                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="ec69ef6ad6c2c2e5a1b66c1b3efd706d" Selector="&lt;webctrl tag='SELECT' /&gt;" TimeoutMS="300" WaitForReady="INTERACTIVE" />
-                                        </ui:SelectItem.Target>
-                                      </ui:SelectItem>
-                                      <ui:UiElementExists DisplayName="Element Exists 'INPUT  login_button'" Exists="[qtyGood]" sap2010:WorkflowViewState.IdRef="UiElementExists_2">
-                                        <ui:UiElementExists.Target>
-                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="2d1c4514bfedc3c2b7c4eeef97cd8d3a" Selector="&lt;webctrl id='login_button' tag='INPUT' /&gt;" TimeoutMS="3000" WaitForReady="INTERACTIVE" />
-                                        </ui:UiElementExists.Target>
-                                      </ui:UiElementExists>
-                                      <If Condition="[qtyGood]" sap2010:WorkflowViewState.IdRef="If_2">
-                                        <If.Then>
-                                          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_10">
-                                            <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT  login_button'" sap2010:WorkflowViewState.IdRef="Click_5" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
-                                              <ui:Click.CursorPosition>
-                                                <ui:CursorPosition Position="Center">
-                                                  <ui:CursorPosition.OffsetX>
-                                                    <InArgument x:TypeArguments="x:Int32" />
-                                                  </ui:CursorPosition.OffsetX>
-                                                  <ui:CursorPosition.OffsetY>
-                                                    <InArgument x:TypeArguments="x:Int32" />
-                                                  </ui:CursorPosition.OffsetY>
-                                                </ui:CursorPosition>
-                                              </ui:Click.CursorPosition>
-                                              <ui:Click.Target>
-                                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="2d1c4514bfedc3c2b7c4eeef97cd8d3a" Selector="&lt;webctrl id='login_button' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                              </ui:Click.Target>
-                                            </ui:Click>
-                                            <ui:SetTransactionStatus ContinueOnError="{x:Null}" Reason="{x:Null}" ServiceBaseAddress="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Set Transaction Status" ErrorType="Business" Status="Successful" TransactionItem="[TransItem]">
-                                              <ui:SetTransactionStatus.Output>
-                                                <scg:Dictionary x:TypeArguments="x:String, InArgument" />
-                                              </ui:SetTransactionStatus.Output>
-                                              <sap2010:WorkflowViewState.IdRef>SetTransactionStatus_1</sap2010:WorkflowViewState.IdRef>
-                                            </ui:SetTransactionStatus>
-                                          </Sequence>
-                                        </If.Then>
-                                        <If.Else>
-                                          <ui:SetTransactionStatus ContinueOnError="{x:Null}" ServiceBaseAddress="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Set Transaction Status" ErrorType="Business" Reason="Out of Stock" Status="Failed" TransactionItem="[TransItem]">
-                                            <ui:SetTransactionStatus.Output>
-                                              <scg:Dictionary x:TypeArguments="x:String, InArgument" />
-                                            </ui:SetTransactionStatus.Output>
-                                            <sap2010:WorkflowViewState.IdRef>SetTransactionStatus_2</sap2010:WorkflowViewState.IdRef>
-                                          </ui:SetTransactionStatus>
-                                        </If.Else>
-                                      </If>
-                                    </Sequence>
-                                  </If.Then>
-                                </If>
+                                <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                                  <Sequence.Variables>
+                                    <Variable x:TypeArguments="x:Boolean" Name="qtyGood" />
+                                  </Sequence.Variables>
+                                  <ui:NavigateTo Browser="{x:Null}" DisplayName="Navigate To" sap2010:WorkflowViewState.IdRef="NavigateTo_3" Url="[url +&quot;home&quot;]" />
+                                  <ui:SelectItem ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Select Product Type" sap2010:WorkflowViewState.IdRef="SelectItem_7" Item="[row(&quot;Type&quot;).ToString]">
+                                    <ui:SelectItem.Items>
+                                      <scg:List x:TypeArguments="x:String" Capacity="4">
+                                        <x:String>Select Product Type</x:String>
+                                        <x:String>Beverages</x:String>
+                                        <x:String>Seasonings</x:String>
+                                      </scg:List>
+                                    </ui:SelectItem.Items>
+                                    <ui:SelectItem.Target>
+                                      <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="6f9fdb469794e3cf04c56afaa4bd379e" Selector="&lt;html omit:app='chrome.exe' title='Home | Pega Studio Training Web Application' /&gt;&lt;webctrl id='productType' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
+                                    </ui:SelectItem.Target>
+                                  </ui:SelectItem>
+                                  <ui:SelectItem DelayAfter="{x:Null}" DelayBefore="{x:Null}" ContinueOnError="True" DisplayName="Select Product" sap2010:WorkflowViewState.IdRef="SelectItem_8" Item="[row(&quot;Product&quot;).ToString]">
+                                    <ui:SelectItem.Items>
+                                      <scg:List x:TypeArguments="x:String" Capacity="32">
+                                        <x:String>Select Product</x:String>
+                                        <x:String>Chai</x:String>
+                                        <x:String>Chang</x:String>
+                                        <x:String>Guarana Fantastica</x:String>
+                                        <x:String>Sasquatch Ale</x:String>
+                                        <x:String>Steeleye Stout</x:String>
+                                        <x:String>Cote de Blaye</x:String>
+                                        <x:String>Chartreuse verte</x:String>
+                                        <x:String>Ipoh Coffee</x:String>
+                                        <x:String>Laughing Lumberjack Lager</x:String>
+                                        <x:String>Outback Lager</x:String>
+                                        <x:String>Rhonbrau Klosterbier</x:String>
+                                        <x:String>Lakkalikoori</x:String>
+                                        <x:String>Aniseed Syrup</x:String>
+                                        <x:String>Chef Anton's Cajun Seasoning</x:String>
+                                        <x:String>Chef Anton's Gumbo Mix</x:String>
+                                        <x:String>Grandma's Boysenberry Spread</x:String>
+                                        <x:String>Northwoods Cranberry Sauce</x:String>
+                                        <x:String>Genen Shouyu</x:String>
+                                        <x:String>Gula Malacca</x:String>
+                                        <x:String>Sirop d'erable</x:String>
+                                        <x:String>Veggie Spread</x:String>
+                                        <x:String>Louisiana Fiery Hot Pepper Sauce</x:String>
+                                        <x:String>Louisiana Hot Spiced Okra</x:String>
+                                        <x:String>Original Frankfurter Grune SoBe</x:String>
+                                      </scg:List>
+                                    </ui:SelectItem.Items>
+                                    <ui:SelectItem.Target>
+                                      <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="edcb85939674f5bca7e01986ad4b0378" Selector="&lt;html omit:app='chrome.exe' title='Home | Pega Studio Training Web Application' /&gt;&lt;webctrl id='productsList' tag='SELECT' /&gt;" TimeoutMS="300" WaitForReady="INTERACTIVE" />
+                                    </ui:SelectItem.Target>
+                                  </ui:SelectItem>
+                                  <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" ContinueOnError="True" DisplayName="Click View Details" sap2010:WorkflowViewState.IdRef="Click_11" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
+                                    <ui:Click.CursorPosition>
+                                      <ui:CursorPosition Position="Center">
+                                        <ui:CursorPosition.OffsetX>
+                                          <InArgument x:TypeArguments="x:Int32" />
+                                        </ui:CursorPosition.OffsetX>
+                                        <ui:CursorPosition.OffsetY>
+                                          <InArgument x:TypeArguments="x:Int32" />
+                                        </ui:CursorPosition.OffsetY>
+                                      </ui:CursorPosition>
+                                    </ui:Click.CursorPosition>
+                                    <ui:Click.Target>
+                                      <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="14af16e758ab0457db441d99cd2ba4df" Selector="&lt;html omit:app='chrome.exe' title='Home | Pega Studio Training Web Application' /&gt;&lt;webctrl tag='INPUT' /&gt;" TimeoutMS="300" WaitForReady="INTERACTIVE" />
+                                    </ui:Click.Target>
+                                  </ui:Click>
+                                  <ui:SelectItem DelayAfter="{x:Null}" DelayBefore="{x:Null}" ContinueOnError="True" DisplayName="Select Item 'SELECT  product_quantit...'" sap2010:WorkflowViewState.IdRef="SelectItem_9" Item="[row(&quot;Quantity&quot;).ToString]">
+                                    <ui:SelectItem.Items>
+                                      <scg:List x:TypeArguments="x:String" Capacity="32">
+                                        <x:String>1</x:String>
+                                        <x:String>2</x:String>
+                                        <x:String>3</x:String>
+                                        <x:String>4</x:String>
+                                        <x:String>5</x:String>
+                                        <x:String>6</x:String>
+                                        <x:String>7</x:String>
+                                        <x:String>8</x:String>
+                                        <x:String>9</x:String>
+                                        <x:String>10</x:String>
+                                        <x:String>11</x:String>
+                                        <x:String>12</x:String>
+                                        <x:String>13</x:String>
+                                        <x:String>14</x:String>
+                                        <x:String>15</x:String>
+                                        <x:String>16</x:String>
+                                        <x:String>17</x:String>
+                                        <x:String>18</x:String>
+                                        <x:String>19</x:String>
+                                        <x:String>20</x:String>
+                                      </scg:List>
+                                    </ui:SelectItem.Items>
+                                    <ui:SelectItem.Target>
+                                      <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="ec69ef6ad6c2c2e5a1b66c1b3efd706d" Selector="&lt;html omit:app='chrome.exe' title='Product Detail | Pega Studio Training Web Application' /&gt;&lt;webctrl tag='SELECT' /&gt;" TimeoutMS="300" WaitForReady="INTERACTIVE" />
+                                    </ui:SelectItem.Target>
+                                  </ui:SelectItem>
+                                  <ui:UiElementExists DisplayName="Element Exists 'INPUT  login_button'" Exists="[qtyGood]" sap2010:WorkflowViewState.IdRef="UiElementExists_3">
+                                    <ui:UiElementExists.Target>
+                                      <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="2d1c4514bfedc3c2b7c4eeef97cd8d3a" Selector="&lt;html omit:app='chrome.exe' title='Product Detail | Pega Studio Training Web Application' /&gt;&lt;webctrl id='login_button' tag='INPUT' /&gt;" TimeoutMS="3000" WaitForReady="INTERACTIVE" />
+                                    </ui:UiElementExists.Target>
+                                  </ui:UiElementExists>
+                                  <If Condition="[qtyGood]" sap2010:WorkflowViewState.IdRef="If_4">
+                                    <If.Then>
+                                      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_11">
+                                        <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT  login_button'" sap2010:WorkflowViewState.IdRef="Click_12" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
+                                          <ui:Click.CursorPosition>
+                                            <ui:CursorPosition Position="Center">
+                                              <ui:CursorPosition.OffsetX>
+                                                <InArgument x:TypeArguments="x:Int32" />
+                                              </ui:CursorPosition.OffsetX>
+                                              <ui:CursorPosition.OffsetY>
+                                                <InArgument x:TypeArguments="x:Int32" />
+                                              </ui:CursorPosition.OffsetY>
+                                            </ui:CursorPosition>
+                                          </ui:Click.CursorPosition>
+                                          <ui:Click.Target>
+                                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="2d1c4514bfedc3c2b7c4eeef97cd8d3a" Selector="&lt;html omit:app='chrome.exe' title='Product Detail | Pega Studio Training Web Application' /&gt;&lt;webctrl id='login_button' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                          </ui:Click.Target>
+                                        </ui:Click>
+                                        <ui:CommentOut DisplayName="Comment Out" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+                                          <ui:CommentOut.Body>
+                                            <Sequence DisplayName="Ignored Activities" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                                              <ui:SetTransactionStatus ContinueOnError="{x:Null}" Reason="{x:Null}" ServiceBaseAddress="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Set Transaction Status" ErrorType="Business" sap2010:WorkflowViewState.IdRef="SetTransactionStatus_3" Status="Successful" TransactionItem="[item]">
+                                                <ui:SetTransactionStatus.Output>
+                                                  <scg:Dictionary x:TypeArguments="x:String, InArgument" />
+                                                </ui:SetTransactionStatus.Output>
+                                              </ui:SetTransactionStatus>
+                                            </Sequence>
+                                          </ui:CommentOut.Body>
+                                        </ui:CommentOut>
+                                      </Sequence>
+                                    </If.Then>
+                                    <If.Else>
+                                      <InvokeMethod DisplayName="Invoke Method" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" MethodName="Add">
+                                        <InvokeMethod.TargetObject>
+                                          <InArgument x:TypeArguments="scg:List(x:String)">[TempOOS]</InArgument>
+                                        </InvokeMethod.TargetObject>
+                                        <InArgument x:TypeArguments="x:String">[row("Product").ToString]</InArgument>
+                                      </InvokeMethod>
+                                    </If.Else>
+                                  </If>
+                                </Sequence>
                               </Sequence>
                             </ActivityAction>
                           </ui:ForEach.Body>
                         </ui:ForEach>
                         <Sequence DisplayName="Place Order" sap2010:WorkflowViewState.IdRef="Sequence_7">
-                          <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Go to cart" sap2010:WorkflowViewState.IdRef="Click_6" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
-                            <ui:Click.CursorPosition>
-                              <ui:CursorPosition Position="Center">
-                                <ui:CursorPosition.OffsetX>
-                                  <InArgument x:TypeArguments="x:Int32" />
-                                </ui:CursorPosition.OffsetX>
-                                <ui:CursorPosition.OffsetY>
-                                  <InArgument x:TypeArguments="x:Int32" />
-                                </ui:CursorPosition.OffsetY>
-                              </ui:CursorPosition>
-                            </ui:Click.CursorPosition>
-                            <ui:Click.Target>
-                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="af27360812958183732b268ab028b6e6" Selector="&lt;webctrl parentid='cart_menu' tag='IMG' /&gt;" WaitForReady="INTERACTIVE" />
-                            </ui:Click.Target>
-                          </ui:Click>
-                          <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Order Total" sap2010:WorkflowViewState.IdRef="GetValue_1">
+                          <ui:NavigateTo Browser="{x:Null}" DisplayName="Navigate To" sap2010:WorkflowViewState.IdRef="NavigateTo_4" Url="[url + &quot;order&quot;]" />
+                          <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text 'SPAN  total_value'" sap2010:WorkflowViewState.IdRef="GetValue_3">
                             <ui:GetValue.Target>
-                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="3f289108d950a6d0f77592735b6b3f98" Selector="&lt;webctrl id='total_value' tag='SPAN' /&gt;" WaitForReady="INTERACTIVE" />
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="d74f6bfdb70a0d914d4dee2b28206dda" Selector="&lt;webctrl id='total_value' tag='SPAN' /&gt;" WaitForReady="INTERACTIVE" />
                             </ui:GetValue.Target>
                             <ui:GetValue.Value>
                               <OutArgument x:TypeArguments="x:String">[OrderTotal]</OutArgument>
                             </ui:GetValue.Value>
                           </ui:GetValue>
-                          <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click Next" sap2010:WorkflowViewState.IdRef="Click_7" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
+                          <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT  next1_button'" sap2010:WorkflowViewState.IdRef="Click_13" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
                             <ui:Click.CursorPosition>
                               <ui:CursorPosition Position="Center">
                                 <ui:CursorPosition.OffsetX>
@@ -377,43 +365,43 @@
                               </ui:CursorPosition>
                             </ui:Click.CursorPosition>
                             <ui:Click.Target>
-                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="ba2e6c873786b9f773e4d31f40820fde" Selector="&lt;webctrl id='next1_button' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="83101f8b17275097b3a4ed56a61259a2" Selector="&lt;webctrl id='next1_button' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                             </ui:Click.Target>
                           </ui:Click>
                           <Sequence DisplayName="Input Address" sap2010:WorkflowViewState.IdRef="Sequence_8">
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set First Name" sap2010:WorkflowViewState.IdRef="SetValue_2" Text="[addRow(&quot;First Name&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="6acd1e8ce62731abeeab58e5720a1944" Selector="&lt;webctrl id='bfirst_name' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="6acd1e8ce62731abeeab58e5720a1944" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='bfirst_name' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Last Name" sap2010:WorkflowViewState.IdRef="SetValue_3" Text="[addRow(&quot;Last Name&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="c866a1f8dbe8844412b68b121e0e5028" Selector="&lt;webctrl id='blast_name' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="c866a1f8dbe8844412b68b121e0e5028" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='blast_name' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Company Name" sap2010:WorkflowViewState.IdRef="SetValue_4" Text="Revature">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="6318889c25f4c67b49c04b9eaad9c5c7" Selector="&lt;webctrl id='bcompany_name' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="6318889c25f4c67b49c04b9eaad9c5c7" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='bcompany_name' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Street Address" sap2010:WorkflowViewState.IdRef="SetValue_5" Text="[addRow(&quot;Street Address&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="d11ec8292aa072bb1d09f462f8d505b9" Selector="&lt;webctrl id='bstreet_address' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="d11ec8292aa072bb1d09f462f8d505b9" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='bstreet_address' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Zip" sap2010:WorkflowViewState.IdRef="SetValue_6" Text="[addRow(&quot;Zip code&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="4e98f9d8b1a050d79f260686706b71ff" Selector="&lt;webctrl id='bzip_code' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="4e98f9d8b1a050d79f260686706b71ff" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='bzip_code' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Area Code" sap2010:WorkflowViewState.IdRef="SetValue_7" Text="[addRow(&quot;Area Code&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="61a233fb0a69dd37679a0a0e0dbf112c" Selector="&lt;webctrl id='barea_code' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="61a233fb0a69dd37679a0a0e0dbf112c" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='barea_code' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Primary Phone" sap2010:WorkflowViewState.IdRef="SetValue_8" Text="[addRow(&quot;Primary Phone&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="2099204bf24c5f76fab1d61ba1601153" Selector="&lt;webctrl id='bprimary_phone' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="2099204bf24c5f76fab1d61ba1601153" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='bprimary_phone' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'A  ship_to_bill'" sap2010:WorkflowViewState.IdRef="Click_8" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
@@ -428,12 +416,12 @@
                                 </ui:CursorPosition>
                               </ui:Click.CursorPosition>
                               <ui:Click.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="48933892ab409422c32b7f32b98250c6" Selector="&lt;webctrl id='ship_to_bill' tag='A' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="48933892ab409422c32b7f32b98250c6" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='ship_to_bill' tag='A' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:Click.Target>
                             </ui:Click>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set eMail" sap2010:WorkflowViewState.IdRef="SetValue_9" Text="[addRow(&quot;eMail&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="9ec53d5ab7c6b237d5d97fa74fe76713" Selector="&lt;webctrl name='email_address' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="9ec53d5ab7c6b237d5d97fa74fe76713" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl name='email_address' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT  next2_button'" sap2010:WorkflowViewState.IdRef="Click_9" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
@@ -448,7 +436,7 @@
                                 </ui:CursorPosition>
                               </ui:Click.CursorPosition>
                               <ui:Click.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="9f09608dfea79eab12d3134b04257134" Selector="&lt;webctrl id='next2_button' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="9f09608dfea79eab12d3134b04257134" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='next2_button' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:Click.Target>
                             </ui:Click>
                           </Sequence>
@@ -462,17 +450,17 @@
                                 </scg:List>
                               </ui:SelectItem.Items>
                               <ui:SelectItem.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="d98e8cd87dc16a8d5af64df132df206a" Selector="&lt;webctrl id='card_type' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="d98e8cd87dc16a8d5af64df132df206a" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='card_type' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SelectItem.Target>
                             </ui:SelectItem>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  security_code'" sap2010:WorkflowViewState.IdRef="SetValue_10" Text="[config(&quot;CCV&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="3b951431fb565e4c22b42a853fad9ffb" Selector="&lt;webctrl id='security_code' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="3b951431fb565e4c22b42a853fad9ffb" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='security_code' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  card_number'" sap2010:WorkflowViewState.IdRef="SetValue_11" Text="[config(&quot;CardNumber&quot;).ToString]">
                               <ui:SetValue.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="49e525f0e059aa086dda6ebd881344eb" Selector="&lt;webctrl id='card_number' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="49e525f0e059aa086dda6ebd881344eb" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='card_number' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SetValue.Target>
                             </ui:SetValue>
                             <ui:SelectItem ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Select Item 'SELECT  expiry_month'" sap2010:WorkflowViewState.IdRef="SelectItem_5" Item="[config(&quot;ExpMonth&quot;).ToString]">
@@ -494,7 +482,7 @@
                                 </scg:List>
                               </ui:SelectItem.Items>
                               <ui:SelectItem.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="370a7bbbaca6a03dc1638d2afa5ab562" Selector="&lt;webctrl id='expiry_month' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="370a7bbbaca6a03dc1638d2afa5ab562" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='expiry_month' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SelectItem.Target>
                             </ui:SelectItem>
                             <ui:SelectItem ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Select Item 'SELECT  expiry_year'" sap2010:WorkflowViewState.IdRef="SelectItem_6" Item="[config(&quot;ExpYear&quot;).ToString]">
@@ -511,7 +499,7 @@
                                 </scg:List>
                               </ui:SelectItem.Items>
                               <ui:SelectItem.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="3e4a45205fc441aacc9cb52fec55611d" Selector="&lt;webctrl id='expiry_year' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="3e4a45205fc441aacc9cb52fec55611d" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='expiry_year' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:SelectItem.Target>
                             </ui:SelectItem>
                             <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT  submit_button'" sap2010:WorkflowViewState.IdRef="Click_10" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
@@ -526,13 +514,13 @@
                                 </ui:CursorPosition>
                               </ui:Click.CursorPosition>
                               <ui:Click.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="e5c53f6a5a86fb05d29e394aedcb03c6" Selector="&lt;webctrl id='submit_button' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="e5c53f6a5a86fb05d29e394aedcb03c6" Selector="&lt;html omit:app='chrome.exe' title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='submit_button' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
                               </ui:Click.Target>
                             </ui:Click>
                           </Sequence>
                           <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text 'B'" sap2010:WorkflowViewState.IdRef="GetValue_2">
                             <ui:GetValue.Target>
-                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="4031741efce9bf84a264e84277d28c01" Selector="&lt;webctrl tag='B' /&gt;" WaitForReady="INTERACTIVE" />
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="4031741efce9bf84a264e84277d28c01" Selector="&lt;html omit:app='chrome.exe' title='Order Products | Pega Studio Training Web Application' /&gt;&lt;webctrl tag='B' /&gt;" WaitForReady="INTERACTIVE" />
                             </ui:GetValue.Target>
                             <ui:GetValue.Value>
                               <OutArgument x:TypeArguments="x:String">[OrderNum]</OutArgument>
@@ -547,6 +535,15 @@
                             </Assign.Value>
                           </Assign>
                         </Sequence>
+                        <Assign sap2010:WorkflowViewState.IdRef="Assign_8">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="scg:List(x:String)">[OutOfStock]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="scg:List(x:String)">[TempOOS]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <ui:CloseTab Browser="{x:Null}" DisplayName="Close Tab" sap2010:WorkflowViewState.IdRef="CloseTab_1" />
                       </Sequence>
                     </ActivityAction>
                   </ui:OpenBrowser.Body>
@@ -558,7 +555,7 @@
                     <ActivityAction.Argument>
                       <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
                     </ActivityAction.Argument>
-                    <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[exception.ToString]" />
+                    <ui:LogMessage DisplayName="Log Message" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Error" Message="[exception.ToString]" />
                   </ActivityAction>
                 </Catch>
               </TryCatch.Catches>
@@ -591,7 +588,7 @@
     <x:Reference>__ReferenceID0</x:Reference>
     <x:Reference>__ReferenceID3</x:Reference>
     <x:Reference>__ReferenceID4</x:Reference>
-    <sads:DebugSymbol.Symbol>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</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>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</sads:DebugSymbol.Symbol>
   </Flowchart>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -605,7 +602,7 @@
       <sap2010:ViewStateData Id="SetValue_1" sap:VirtualizedContainerService.HintSize="314,134" />
       <sap2010:ViewStateData Id="TypeSecureText_1" sap:VirtualizedContainerService.HintSize="314,106" />
       <sap2010:ViewStateData Id="Click_1" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -613,7 +610,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="NavigateTo_2" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="NavigateTo_2" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -631,7 +628,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="DoWhile_1" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="DoWhile_1" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -639,26 +636,24 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="GetQueueItems_1" sap:VirtualizedContainerService.HintSize="287,22" />
-      <sap2010:ViewStateData Id="GetQueueItem_2" sap:VirtualizedContainerService.HintSize="464,22" />
-      <sap2010:ViewStateData Id="Assign_7" sap:VirtualizedContainerService.HintSize="464,60" />
-      <sap2010:ViewStateData Id="NavigateTo_1" sap:VirtualizedContainerService.HintSize="314,59" />
-      <sap2010:ViewStateData Id="SelectItem_1" sap:VirtualizedContainerService.HintSize="314,134" />
-      <sap2010:ViewStateData Id="SelectItem_2" sap:VirtualizedContainerService.HintSize="314,134" />
-      <sap2010:ViewStateData Id="Click_4" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="SelectItem_3" sap:VirtualizedContainerService.HintSize="314,134" />
-      <sap2010:ViewStateData Id="UiElementExists_2" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="Click_5" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="SetTransactionStatus_1" sap:VirtualizedContainerService.HintSize="314,22" />
-      <sap2010:ViewStateData Id="Sequence_10" sap:VirtualizedContainerService.HintSize="336,292">
+      <sap2010:ViewStateData Id="GetQueueItems_1" sap:VirtualizedContainerService.HintSize="242,22" />
+      <sap2010:ViewStateData Id="Assign_7" sap:VirtualizedContainerService.HintSize="336,60" />
+      <sap2010:ViewStateData Id="NavigateTo_3" sap:VirtualizedContainerService.HintSize="314,59" />
+      <sap2010:ViewStateData Id="SelectItem_7" sap:VirtualizedContainerService.HintSize="314,134" />
+      <sap2010:ViewStateData Id="SelectItem_8" sap:VirtualizedContainerService.HintSize="314,134" />
+      <sap2010:ViewStateData Id="Click_11" sap:VirtualizedContainerService.HintSize="314,106" />
+      <sap2010:ViewStateData Id="SelectItem_9" sap:VirtualizedContainerService.HintSize="314,134" />
+      <sap2010:ViewStateData Id="UiElementExists_3" sap:VirtualizedContainerService.HintSize="314,106" />
+      <sap2010:ViewStateData Id="Click_12" sap:VirtualizedContainerService.HintSize="314,106" />
+      <sap2010:ViewStateData Id="SetTransactionStatus_3" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="Sequence_13" sap:VirtualizedContainerService.HintSize="222,146">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="SetTransactionStatus_2" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="561,440">
+      <sap2010:ViewStateData Id="CommentOut_1" sap:VirtualizedContainerService.HintSize="314,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -666,15 +661,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="336,1088">
+      <sap2010:ViewStateData Id="Sequence_11" sap:VirtualizedContainerService.HintSize="336,321">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="If_3" sap:VirtualizedContainerService.HintSize="464,1236" />
-      <sap2010:ViewStateData Id="Sequence_6" sap:VirtualizedContainerService.HintSize="486,1522">
+      <sap2010:ViewStateData Id="InvokeMethod_1" sap:VirtualizedContainerService.HintSize="218,132" />
+      <sap2010:ViewStateData Id="If_4" sap:VirtualizedContainerService.HintSize="579,469">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -682,8 +677,14 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ForEach`1_2" sap:VirtualizedContainerService.HintSize="287,194" />
-      <sap2010:ViewStateData Id="Click_6" sap:VirtualizedContainerService.HintSize="242,51">
+      <sap2010:ViewStateData Id="Sequence_12" sap:VirtualizedContainerService.HintSize="336,1088">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_6" sap:VirtualizedContainerService.HintSize="358,1312">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -691,7 +692,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="GetValue_1" sap:VirtualizedContainerService.HintSize="242,51">
+      <sap2010:ViewStateData Id="ForEach`1_2" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -699,14 +700,9 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Click_7" sap:VirtualizedContainerService.HintSize="242,51">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-            <x:Boolean x:Key="IsPinned">False</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="NavigateTo_4" sap:VirtualizedContainerService.HintSize="314,59" />
+      <sap2010:ViewStateData Id="GetValue_3" sap:VirtualizedContainerService.HintSize="314,106" />
+      <sap2010:ViewStateData Id="Click_13" sap:VirtualizedContainerService.HintSize="314,106" />
       <sap2010:ViewStateData Id="SetValue_2" sap:VirtualizedContainerService.HintSize="314,134" />
       <sap2010:ViewStateData Id="SetValue_3" sap:VirtualizedContainerService.HintSize="314,134" />
       <sap2010:ViewStateData Id="SetValue_4" sap:VirtualizedContainerService.HintSize="314,134" />
@@ -717,7 +713,7 @@
       <sap2010:ViewStateData Id="Click_8" sap:VirtualizedContainerService.HintSize="314,106" />
       <sap2010:ViewStateData Id="SetValue_9" sap:VirtualizedContainerService.HintSize="314,134" />
       <sap2010:ViewStateData Id="Click_9" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="Sequence_8" sap:VirtualizedContainerService.HintSize="242,51">
+      <sap2010:ViewStateData Id="Sequence_8" sap:VirtualizedContainerService.HintSize="314,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -731,7 +727,7 @@
       <sap2010:ViewStateData Id="SelectItem_5" sap:VirtualizedContainerService.HintSize="314,134" />
       <sap2010:ViewStateData Id="SelectItem_6" sap:VirtualizedContainerService.HintSize="314,134" />
       <sap2010:ViewStateData Id="Click_10" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="242,51">
+      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="314,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -739,7 +735,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="GetValue_2" sap:VirtualizedContainerService.HintSize="242,51">
+      <sap2010:ViewStateData Id="GetValue_2" sap:VirtualizedContainerService.HintSize="314,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -747,8 +743,8 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Assign_6" sap:VirtualizedContainerService.HintSize="242,60" />
-      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="287,51">
+      <sap2010:ViewStateData Id="Assign_6" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="336,848">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -756,14 +752,16 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="309,744">
+      <sap2010:ViewStateData Id="Assign_8" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="CloseTab_1" sap:VirtualizedContainerService.HintSize="242,22" />
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="264,763">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="OpenBrowser_1" sap:VirtualizedContainerService.HintSize="414,700">
+      <sap2010:ViewStateData Id="OpenBrowser_1" sap:VirtualizedContainerService.HintSize="414,862">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -771,7 +769,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="210,61" />
+      <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="314,91" />
       <sap2010:ViewStateData Id="Catch`1_1" sap:VirtualizedContainerService.HintSize="404,21">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">

@@ -83,365 +83,368 @@
       <Variable x:TypeArguments="njl:JObject" Name="Config" />
     </Flowchart.Variables>
     <Flowchart.StartNode>
-      <FlowStep x:Name="__ReferenceID4" sap2010:WorkflowViewState.IdRef="FlowStep_6">
-        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_9">
-          <ui:ReadTextFile Content="[configText]" DisplayName="Read Text File" FileName="config.txt" sap2010:WorkflowViewState.IdRef="ReadTextFile_2" />
-          <ui:DeserializeJson x:TypeArguments="njl:JObject" DisplayName="Deserialize JSON" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_1" JsonObject="[Config]" JsonString="[configText]" />
+      <FlowStep x:Name="__ReferenceID4" sap2010:WorkflowViewState.IdRef="FlowStep_7">
+        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_11">
+          <Sequence.Variables>
+            <Variable x:TypeArguments="scg:Dictionary(x:String, x:String)" Default="[new Dictionary(of string,string)]" Name="TestDict" />
+          </Sequence.Variables>
+          <Assign sap2010:WorkflowViewState.IdRef="Assign_27">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[TestDict("First")]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">Store</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:MessageBox Caption="{x:Null}" ChosenButton="{x:Null}" Buttons="Ok" DisplayName="Message Box" Text="[TestDict(&quot;First&quot;)]" TopMost="True" sap2010:WorkflowViewState.IdRef="MessageBox_1" />
         </Sequence>
-        <FlowStep.Next>
-          <FlowStep x:Name="__ReferenceID2" sap2010:WorkflowViewState.IdRef="FlowStep_3">
-            <Sequence DisplayName="initialize data table" sap2010:WorkflowViewState.IdRef="Sequence_5">
-              <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="FirstName" DataTable="[dt_Customers]" DisplayName="Add First Name" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_1" MaxLength="100" Unique="False" />
-              <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="LastName" DataTable="[dt_Customers]" DisplayName="Add Last Name" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_2" MaxLength="100" Unique="False" />
-              <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="eMail" DataTable="[dt_Customers]" DisplayName="Add eMail" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_3" MaxLength="100" Unique="False" />
-              <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="PhoneNumber" DataTable="[dt_Customers]" DisplayName="Add Phone Number" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_4" MaxLength="100" Unique="False" />
-              <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="Address" DataTable="[dt_Customers]" DisplayName="Add Address" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_5" MaxLength="100" Unique="False" />
-              <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="Company Name" DataTable="[dt_Customers]" DisplayName="Add Company Name" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_6" MaxLength="100" Unique="False" />
-              <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="Job Title" DataTable="[dt_Customers]" DisplayName="Add Job Title" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_7" MaxLength="100" Unique="False" />
-              <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="Status" DataTable="[dt_Customers]" DisplayName="Add Status" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_8" MaxLength="100" Unique="False" />
-            </Sequence>
-            <FlowStep.Next>
-              <FlowStep x:Name="__ReferenceID0" sap2010:WorkflowViewState.IdRef="FlowStep_1">
-                <ui:OpenBrowser UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Load Randos" Hidden="False" sap2010:WorkflowViewState.IdRef="OpenBrowser_1" NewSession="True" Private="False" Url="http://fakenamegenerator.com/">
-                  <ui:OpenBrowser.Body>
-                    <ActivityAction x:TypeArguments="x:Object">
-                      <ActivityAction.Argument>
-                        <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
-                      </ActivityAction.Argument>
-                      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_3">
-                        <Sequence.Variables>
-                          <Variable x:TypeArguments="sd:DataRow" Name="newRow" />
-                        </Sequence.Variables>
-                        <While sap2010:WorkflowViewState.IdRef="While_1" Condition="[Counter &lt; 3]">
-                          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_8">
-                            <Assign sap2010:WorkflowViewState.IdRef="Assign_11">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="sd:DataRow">[newRow]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="sd:DataRow">[dt_Customers.NewRow]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                            <Sequence DisplayName="Get Rando" sap2010:WorkflowViewState.IdRef="Sequence_6">
-                              <Sequence.Variables>
-                                <Variable x:TypeArguments="x:String" Name="FullName" />
-                                <Variable x:TypeArguments="s:String[]" Name="NameArr" />
-                              </Sequence.Variables>
-                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Number" sap2010:WorkflowViewState.IdRef="GetValue_7">
-                                <ui:GetValue.Target>
-                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="b8639b4ea82c5d67eee36c60e9ec9cf3" Selector="&lt;webctrl idx='2' isleaf='1' tag='DD' /&gt;" WaitForReady="INTERACTIVE" />
-                                </ui:GetValue.Target>
-                                <ui:GetValue.Value>
-                                  <OutArgument x:TypeArguments="x:String">[PhoneNumber]</OutArgument>
-                                </ui:GetValue.Value>
-                              </ui:GetValue>
-                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get eMail" sap2010:WorkflowViewState.IdRef="GetValue_8">
-                                <ui:GetValue.Target>
-                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="c8e930fe448183cfa5808583536016c2" Selector="&lt;webctrl idx='9' tag='DD' /&gt;" WaitForReady="INTERACTIVE" />
-                                </ui:GetValue.Target>
-                                <ui:GetValue.Value>
-                                  <OutArgument x:TypeArguments="x:String">[eMail]</OutArgument>
-                                </ui:GetValue.Value>
-                              </ui:GetValue>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_13">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[eMail]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">[eMail.Split(" "C)(0)]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Address" sap2010:WorkflowViewState.IdRef="GetValue_9">
-                                <ui:GetValue.Target>
-                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="400de4f9e1d7bd3eeb03fa41a76cf376" Selector="&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' parentid='details' tag='DIV' /&gt;" WaitForReady="INTERACTIVE" />
-                                </ui:GetValue.Target>
-                                <ui:GetValue.Value>
-                                  <OutArgument x:TypeArguments="x:String">[Address]</OutArgument>
-                                </ui:GetValue.Value>
-                              </ui:GetValue>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_26">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[Address]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">[Address.Trim]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Name" sap2010:WorkflowViewState.IdRef="GetValue_10">
-                                <ui:GetValue.Target>
-                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="3caa39ef990c674057d9f8f6e89ded9b" Selector="&lt;webctrl idx='1' tag='H3' /&gt;" WaitForReady="INTERACTIVE" />
-                                </ui:GetValue.Target>
-                                <ui:GetValue.Value>
-                                  <OutArgument x:TypeArguments="x:String">[FullName]</OutArgument>
-                                </ui:GetValue.Value>
-                              </ui:GetValue>
-                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Job Title" sap2010:WorkflowViewState.IdRef="GetValue_11">
-                                <ui:GetValue.Target>
-                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="79442da5ed1bed34b62b1412c873a23f" Selector="&lt;webctrl idx='14' isleaf='1' tag='DD' /&gt;" WaitForReady="INTERACTIVE" />
-                                </ui:GetValue.Target>
-                                <ui:GetValue.Value>
-                                  <OutArgument x:TypeArguments="x:String">[JobTitle]</OutArgument>
-                                </ui:GetValue.Value>
-                              </ui:GetValue>
-                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Company" sap2010:WorkflowViewState.IdRef="GetValue_12">
-                                <ui:GetValue.Target>
-                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="4b713c34097deb5173ca39ffb709e0de" Selector="&lt;webctrl idx='15' isleaf='1' tag='DD' /&gt;" WaitForReady="INTERACTIVE" />
-                                </ui:GetValue.Target>
-                                <ui:GetValue.Value>
-                                  <OutArgument x:TypeArguments="x:String">[CompanyName]</OutArgument>
-                                </ui:GetValue.Value>
-                              </ui:GetValue>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_14">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="s:String[]">[NameArr]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="s:String[]">[FullName.Split(" "C)]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_15">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[FirstName]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">[NameArr(0)]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_16">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:String">[LastName]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:String">[NameArr(NameArr.Length-1)]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT  genbtn'" sap2010:WorkflowViewState.IdRef="Click_2" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
-                                <ui:Click.CursorPosition>
-                                  <ui:CursorPosition Position="Center">
-                                    <ui:CursorPosition.OffsetX>
-                                      <InArgument x:TypeArguments="x:Int32" />
-                                    </ui:CursorPosition.OffsetX>
-                                    <ui:CursorPosition.OffsetY>
-                                      <InArgument x:TypeArguments="x:Int32" />
-                                    </ui:CursorPosition.OffsetY>
-                                  </ui:CursorPosition>
-                                </ui:Click.CursorPosition>
-                                <ui:Click.Target>
-                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="8ee2e19df3b511765638c0923bc87abe" Selector="&lt;webctrl id='genbtn' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                </ui:Click.Target>
-                              </ui:Click>
-                            </Sequence>
-                            <Sequence DisplayName="Put Data In Row" sap2010:WorkflowViewState.IdRef="Sequence_7">
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_17">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Object">[newRow("FirstName")]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Object">[FirstName]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_18">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Object">[newRow("LastName")]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Object">[LastName]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_19">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Object">[newRow("eMail")]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Object">[eMail]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_20">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Object">[newRow("PhoneNumber")]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Object">[PhoneNumber]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_21">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Object">[newRow("Address")]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Object">[Address]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_22">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Object">[newRow("Company Name")]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Object">[CompanyName]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                              <Assign sap2010:WorkflowViewState.IdRef="Assign_23">
-                                <Assign.To>
-                                  <OutArgument x:TypeArguments="x:Object">[newRow("Job Title")]</OutArgument>
-                                </Assign.To>
-                                <Assign.Value>
-                                  <InArgument x:TypeArguments="x:Object">[JobTitle]</InArgument>
-                                </Assign.Value>
-                              </Assign>
-                            </Sequence>
-                            <ui:AddDataRow ArrayRow="{x:Null}" DataRow="[newRow]" DataTable="[dt_Customers]" DisplayName="Add Data Row" sap2010:WorkflowViewState.IdRef="AddDataRow_2" />
-                            <Assign sap2010:WorkflowViewState.IdRef="Assign_24">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Int32">[Counter]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Int32">[Counter + 1]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                          </Sequence>
-                        </While>
-                        <ui:CloseTab Browser="{x:Null}" DisplayName="Close Tab" sap2010:WorkflowViewState.IdRef="CloseTab_1" />
-                      </Sequence>
-                    </ActivityAction>
-                  </ui:OpenBrowser.Body>
-                </ui:OpenBrowser>
-                <FlowStep.Next>
-                  <FlowStep x:Name="__ReferenceID1" sap2010:WorkflowViewState.IdRef="FlowStep_2">
-                    <ui:OpenBrowser UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Submit Randos" Hidden="False" sap2010:WorkflowViewState.IdRef="OpenBrowser_2" NewSession="True" Private="False" Url="https://localhost:44381/">
-                      <ui:OpenBrowser.Body>
-                        <ActivityAction x:TypeArguments="x:Object">
-                          <ActivityAction.Argument>
-                            <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
-                          </ActivityAction.Argument>
-                          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_10">
-                            <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dt_Customers]" DisplayName="For Each Row" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
-                              <ui:ForEachRow.Body>
-                                <ActivityAction x:TypeArguments="sd:DataRow">
-                                  <ActivityAction.Argument>
-                                    <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
-                                  </ActivityAction.Argument>
-                                  <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_4">
-                                    <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  FirstName'" sap2010:WorkflowViewState.IdRef="SetValue_1" Text="[row(&quot;FirstName&quot;).ToString]">
-                                      <ui:SetValue.Target>
-                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="69ffec86e0f318b239ace9f0b47293e3" Selector="&lt;webctrl id='FirstName' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                      </ui:SetValue.Target>
-                                    </ui:SetValue>
-                                    <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  LastName'" sap2010:WorkflowViewState.IdRef="SetValue_2" Text="[row(&quot;LastName&quot;).ToString]">
-                                      <ui:SetValue.Target>
-                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="aa0bc7e334305e9eea540d82fcde20db" Selector="&lt;webctrl id='LastName' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                      </ui:SetValue.Target>
-                                    </ui:SetValue>
-                                    <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  eMail'" sap2010:WorkflowViewState.IdRef="SetValue_3" Text="[row(&quot;eMail&quot;).ToString]">
-                                      <ui:SetValue.Target>
-                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="5b02f64b33b8a367e5718988a95df0d2" Selector="&lt;webctrl id='eMail' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                      </ui:SetValue.Target>
-                                    </ui:SetValue>
-                                    <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  PhoneNumber'" sap2010:WorkflowViewState.IdRef="SetValue_4" Text="[row(&quot;PhoneNumber&quot;).ToString]">
-                                      <ui:SetValue.Target>
-                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="bd5ccbcc63018cba3d24012935b694b1" Selector="&lt;webctrl id='PhoneNumber' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                      </ui:SetValue.Target>
-                                    </ui:SetValue>
-                                    <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  Address'" sap2010:WorkflowViewState.IdRef="SetValue_5" Text="[row(&quot;Address&quot;).ToString]">
-                                      <ui:SetValue.Target>
-                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="17c47611e97b3b92fd2a23b8b12e95c3" Selector="&lt;webctrl id='Address' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                      </ui:SetValue.Target>
-                                    </ui:SetValue>
-                                    <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  CompanyName'" sap2010:WorkflowViewState.IdRef="SetValue_6" Text="[row(&quot;Company Name&quot;).ToString]">
-                                      <ui:SetValue.Target>
-                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="7f2b20d22d1e6c7fcbc2ecb2eea03e0d" Selector="&lt;webctrl id='CompanyName' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                      </ui:SetValue.Target>
-                                    </ui:SetValue>
-                                    <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  JobTitle'" sap2010:WorkflowViewState.IdRef="SetValue_7" Text="[row(&quot;Job Title&quot;).ToString]">
-                                      <ui:SetValue.Target>
-                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="d8100b4cfd0b0df2c6f4e60ed2e1f80b" Selector="&lt;webctrl id='JobTitle' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
-                                      </ui:SetValue.Target>
-                                    </ui:SetValue>
-                                    <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT'" sap2010:WorkflowViewState.IdRef="Click_1" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
-                                      <ui:Click.CursorPosition>
-                                        <ui:CursorPosition Position="Center">
-                                          <ui:CursorPosition.OffsetX>
-                                            <InArgument x:TypeArguments="x:Int32" />
-                                          </ui:CursorPosition.OffsetX>
-                                          <ui:CursorPosition.OffsetY>
-                                            <InArgument x:TypeArguments="x:Int32" />
-                                          </ui:CursorPosition.OffsetY>
-                                        </ui:CursorPosition>
-                                      </ui:Click.CursorPosition>
-                                      <ui:Click.Target>
-                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="5390dd4657740f7194205b11831cf423" Selector="&lt;webctrl tag='INPUT' type='submit' /&gt;" WaitForReady="INTERACTIVE" />
-                                      </ui:Click.Target>
-                                    </ui:Click>
-                                    <Assign sap2010:WorkflowViewState.IdRef="Assign_25">
-                                      <Assign.To>
-                                        <OutArgument x:TypeArguments="x:Object">[row("Status")]</OutArgument>
-                                      </Assign.To>
-                                      <Assign.Value>
-                                        <InArgument x:TypeArguments="x:Object">["Regestered"]</InArgument>
-                                      </Assign.Value>
-                                    </Assign>
-                                    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" Body="[&quot;You are &quot; + row(&quot;FirstName&quot;).ToString + &quot; &quot; + row(&quot;LastName&quot;).ToString + &quot; living at &quot; + row(&quot;Address&quot;).ToString]" DisplayName="Send SMTP Mail Message" Email="[Config(&quot;username&quot;).ToString]" EnableSSL="True" From="[Config(&quot;username&quot;).ToString]" sap2010:WorkflowViewState.IdRef="SendMail_1" IsBodyHtml="False" Name="Ui Bot" Password="[Config(&quot;password&quot;).ToString]" Port="587" SecureConnection="StartTls" Server="smtp.office365.com" Subject="[&quot;Welcome &quot; + row(&quot;FirstName&quot;).ToString]" To="heatwaveqc@gmail.com">
-                                      <ui:SendMail.Files>
-                                        <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
-                                      </ui:SendMail.Files>
-                                    </ui:SendMail>
-                                  </Sequence>
-                                </ActivityAction>
-                              </ui:ForEachRow.Body>
-                            </ui:ForEachRow>
-                            <ui:CloseTab Browser="{x:Null}" DisplayName="Close Tab" sap2010:WorkflowViewState.IdRef="CloseTab_2" />
-                          </Sequence>
-                        </ActivityAction>
-                      </ui:OpenBrowser.Body>
-                    </ui:OpenBrowser>
-                    <FlowStep.Next>
-                      <FlowStep x:Name="__ReferenceID3" sap2010:WorkflowViewState.IdRef="FlowStep_4">
-                        <ui:WriteRange AddHeaders="True" DataTable="[dt_Customers]" DisplayName="Write Range" sap2010:WorkflowViewState.IdRef="WriteRange_1" SheetName="Sheet1" StartingCell="A1" WorkbookPath="Customer.xlsx" />
-                      </FlowStep>
-                    </FlowStep.Next>
-                  </FlowStep>
-                </FlowStep.Next>
-              </FlowStep>
-            </FlowStep.Next>
-          </FlowStep>
-        </FlowStep.Next>
       </FlowStep>
     </Flowchart.StartNode>
+    <FlowStep x:Name="__ReferenceID1" sap2010:WorkflowViewState.IdRef="FlowStep_1">
+      <ui:OpenBrowser UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Load Randos" Hidden="False" sap2010:WorkflowViewState.IdRef="OpenBrowser_1" NewSession="True" Private="False" Url="http://fakenamegenerator.com/">
+        <ui:OpenBrowser.Body>
+          <ActivityAction x:TypeArguments="x:Object">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
+            </ActivityAction.Argument>
+            <Sequence sap2010:WorkflowViewState.IdRef="Sequence_3">
+              <Sequence.Variables>
+                <Variable x:TypeArguments="sd:DataRow" Name="newRow" />
+              </Sequence.Variables>
+              <While sap2010:WorkflowViewState.IdRef="While_1" Condition="[Counter &lt; 3]">
+                <Sequence sap2010:WorkflowViewState.IdRef="Sequence_8">
+                  <Assign sap2010:WorkflowViewState.IdRef="Assign_11">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="sd:DataRow">[newRow]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="sd:DataRow">[dt_Customers.NewRow]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Sequence DisplayName="Get Rando" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                    <Sequence.Variables>
+                      <Variable x:TypeArguments="x:String" Name="FullName" />
+                      <Variable x:TypeArguments="s:String[]" Name="NameArr" />
+                    </Sequence.Variables>
+                    <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Number" sap2010:WorkflowViewState.IdRef="GetValue_7">
+                      <ui:GetValue.Target>
+                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="b8639b4ea82c5d67eee36c60e9ec9cf3" Selector="&lt;webctrl idx='2' isleaf='1' tag='DD' /&gt;" WaitForReady="INTERACTIVE" />
+                      </ui:GetValue.Target>
+                      <ui:GetValue.Value>
+                        <OutArgument x:TypeArguments="x:String">[PhoneNumber]</OutArgument>
+                      </ui:GetValue.Value>
+                    </ui:GetValue>
+                    <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get eMail" sap2010:WorkflowViewState.IdRef="GetValue_8">
+                      <ui:GetValue.Target>
+                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="c8e930fe448183cfa5808583536016c2" Selector="&lt;webctrl idx='9' tag='DD' /&gt;" WaitForReady="INTERACTIVE" />
+                      </ui:GetValue.Target>
+                      <ui:GetValue.Value>
+                        <OutArgument x:TypeArguments="x:String">[eMail]</OutArgument>
+                      </ui:GetValue.Value>
+                    </ui:GetValue>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_13">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[eMail]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[eMail.Split(" "C)(0)]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Address" sap2010:WorkflowViewState.IdRef="GetValue_9">
+                      <ui:GetValue.Target>
+                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="400de4f9e1d7bd3eeb03fa41a76cf376" Selector="&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' parentid='details' tag='DIV' /&gt;" WaitForReady="INTERACTIVE" />
+                      </ui:GetValue.Target>
+                      <ui:GetValue.Value>
+                        <OutArgument x:TypeArguments="x:String">[Address]</OutArgument>
+                      </ui:GetValue.Value>
+                    </ui:GetValue>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_26">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[Address]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[Address.Trim]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Name" sap2010:WorkflowViewState.IdRef="GetValue_10">
+                      <ui:GetValue.Target>
+                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="3caa39ef990c674057d9f8f6e89ded9b" Selector="&lt;webctrl idx='1' tag='H3' /&gt;" WaitForReady="INTERACTIVE" />
+                      </ui:GetValue.Target>
+                      <ui:GetValue.Value>
+                        <OutArgument x:TypeArguments="x:String">[FullName]</OutArgument>
+                      </ui:GetValue.Value>
+                    </ui:GetValue>
+                    <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Job Title" sap2010:WorkflowViewState.IdRef="GetValue_11">
+                      <ui:GetValue.Target>
+                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="79442da5ed1bed34b62b1412c873a23f" Selector="&lt;webctrl idx='14' isleaf='1' tag='DD' /&gt;" WaitForReady="INTERACTIVE" />
+                      </ui:GetValue.Target>
+                      <ui:GetValue.Value>
+                        <OutArgument x:TypeArguments="x:String">[JobTitle]</OutArgument>
+                      </ui:GetValue.Value>
+                    </ui:GetValue>
+                    <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Company" sap2010:WorkflowViewState.IdRef="GetValue_12">
+                      <ui:GetValue.Target>
+                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="4b713c34097deb5173ca39ffb709e0de" Selector="&lt;webctrl idx='15' isleaf='1' tag='DD' /&gt;" WaitForReady="INTERACTIVE" />
+                      </ui:GetValue.Target>
+                      <ui:GetValue.Value>
+                        <OutArgument x:TypeArguments="x:String">[CompanyName]</OutArgument>
+                      </ui:GetValue.Value>
+                    </ui:GetValue>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_14">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="s:String[]">[NameArr]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="s:String[]">[FullName.Split(" "C)]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_15">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[FirstName]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[NameArr(0)]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_16">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[LastName]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[NameArr(NameArr.Length-1)]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT  genbtn'" sap2010:WorkflowViewState.IdRef="Click_2" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
+                      <ui:Click.CursorPosition>
+                        <ui:CursorPosition Position="Center">
+                          <ui:CursorPosition.OffsetX>
+                            <InArgument x:TypeArguments="x:Int32" />
+                          </ui:CursorPosition.OffsetX>
+                          <ui:CursorPosition.OffsetY>
+                            <InArgument x:TypeArguments="x:Int32" />
+                          </ui:CursorPosition.OffsetY>
+                        </ui:CursorPosition>
+                      </ui:Click.CursorPosition>
+                      <ui:Click.Target>
+                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="8ee2e19df3b511765638c0923bc87abe" Selector="&lt;webctrl id='genbtn' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                      </ui:Click.Target>
+                    </ui:Click>
+                  </Sequence>
+                  <Sequence DisplayName="Put Data In Row" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_17">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:Object">[newRow("FirstName")]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:Object">[FirstName]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_18">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:Object">[newRow("LastName")]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:Object">[LastName]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_19">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:Object">[newRow("eMail")]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:Object">[eMail]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_20">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:Object">[newRow("PhoneNumber")]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:Object">[PhoneNumber]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_21">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:Object">[newRow("Address")]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:Object">[Address]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_22">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:Object">[newRow("Company Name")]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:Object">[CompanyName]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_23">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:Object">[newRow("Job Title")]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:Object">[JobTitle]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </Sequence>
+                  <ui:AddDataRow ArrayRow="{x:Null}" DataRow="[newRow]" DataTable="[dt_Customers]" DisplayName="Add Data Row" sap2010:WorkflowViewState.IdRef="AddDataRow_2" />
+                  <Assign sap2010:WorkflowViewState.IdRef="Assign_24">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Int32">[Counter]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Int32">[Counter + 1]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                </Sequence>
+              </While>
+              <ui:CloseTab Browser="{x:Null}" DisplayName="Close Tab" sap2010:WorkflowViewState.IdRef="CloseTab_1" />
+            </Sequence>
+          </ActivityAction>
+        </ui:OpenBrowser.Body>
+      </ui:OpenBrowser>
+      <FlowStep.Next>
+        <FlowStep x:Name="__ReferenceID0" sap2010:WorkflowViewState.IdRef="FlowStep_2">
+          <ui:OpenBrowser UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Submit Randos" Hidden="False" sap2010:WorkflowViewState.IdRef="OpenBrowser_2" NewSession="True" Private="False" Url="https://localhost:44381/">
+            <ui:OpenBrowser.Body>
+              <ActivityAction x:TypeArguments="x:Object">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
+                </ActivityAction.Argument>
+                <Sequence sap2010:WorkflowViewState.IdRef="Sequence_10">
+                  <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dt_Customers]" DisplayName="For Each Row" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+                    <ui:ForEachRow.Body>
+                      <ActivityAction x:TypeArguments="sd:DataRow">
+                        <ActivityAction.Argument>
+                          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                        </ActivityAction.Argument>
+                        <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_4">
+                          <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  FirstName'" sap2010:WorkflowViewState.IdRef="SetValue_1" Text="[row(&quot;FirstName&quot;).ToString]">
+                            <ui:SetValue.Target>
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="69ffec86e0f318b239ace9f0b47293e3" Selector="&lt;webctrl id='FirstName' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                            </ui:SetValue.Target>
+                          </ui:SetValue>
+                          <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  LastName'" sap2010:WorkflowViewState.IdRef="SetValue_2" Text="[row(&quot;LastName&quot;).ToString]">
+                            <ui:SetValue.Target>
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="aa0bc7e334305e9eea540d82fcde20db" Selector="&lt;webctrl id='LastName' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                            </ui:SetValue.Target>
+                          </ui:SetValue>
+                          <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  eMail'" sap2010:WorkflowViewState.IdRef="SetValue_3" Text="[row(&quot;eMail&quot;).ToString]">
+                            <ui:SetValue.Target>
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="5b02f64b33b8a367e5718988a95df0d2" Selector="&lt;webctrl id='eMail' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                            </ui:SetValue.Target>
+                          </ui:SetValue>
+                          <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  PhoneNumber'" sap2010:WorkflowViewState.IdRef="SetValue_4" Text="[row(&quot;PhoneNumber&quot;).ToString]">
+                            <ui:SetValue.Target>
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="bd5ccbcc63018cba3d24012935b694b1" Selector="&lt;webctrl id='PhoneNumber' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                            </ui:SetValue.Target>
+                          </ui:SetValue>
+                          <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  Address'" sap2010:WorkflowViewState.IdRef="SetValue_5" Text="[row(&quot;Address&quot;).ToString]">
+                            <ui:SetValue.Target>
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="17c47611e97b3b92fd2a23b8b12e95c3" Selector="&lt;webctrl id='Address' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                            </ui:SetValue.Target>
+                          </ui:SetValue>
+                          <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  CompanyName'" sap2010:WorkflowViewState.IdRef="SetValue_6" Text="[row(&quot;Company Name&quot;).ToString]">
+                            <ui:SetValue.Target>
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="7f2b20d22d1e6c7fcbc2ecb2eea03e0d" Selector="&lt;webctrl id='CompanyName' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                            </ui:SetValue.Target>
+                          </ui:SetValue>
+                          <ui:SetValue ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Set Text 'INPUT  JobTitle'" sap2010:WorkflowViewState.IdRef="SetValue_7" Text="[row(&quot;Job Title&quot;).ToString]">
+                            <ui:SetValue.Target>
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="d8100b4cfd0b0df2c6f4e60ed2e1f80b" Selector="&lt;webctrl id='JobTitle' tag='INPUT' /&gt;" WaitForReady="INTERACTIVE" />
+                            </ui:SetValue.Target>
+                          </ui:SetValue>
+                          <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'INPUT'" sap2010:WorkflowViewState.IdRef="Click_1" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
+                            <ui:Click.CursorPosition>
+                              <ui:CursorPosition Position="Center">
+                                <ui:CursorPosition.OffsetX>
+                                  <InArgument x:TypeArguments="x:Int32" />
+                                </ui:CursorPosition.OffsetX>
+                                <ui:CursorPosition.OffsetY>
+                                  <InArgument x:TypeArguments="x:Int32" />
+                                </ui:CursorPosition.OffsetY>
+                              </ui:CursorPosition>
+                            </ui:Click.CursorPosition>
+                            <ui:Click.Target>
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="5390dd4657740f7194205b11831cf423" Selector="&lt;webctrl tag='INPUT' type='submit' /&gt;" WaitForReady="INTERACTIVE" />
+                            </ui:Click.Target>
+                          </ui:Click>
+                          <Assign sap2010:WorkflowViewState.IdRef="Assign_25">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Object">[row("Status")]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Object">["Regestered"]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" Body="[&quot;You are &quot; + row(&quot;FirstName&quot;).ToString + &quot; &quot; + row(&quot;LastName&quot;).ToString + &quot; living at &quot; + row(&quot;Address&quot;).ToString]" DisplayName="Send SMTP Mail Message" Email="[Config(&quot;username&quot;).ToString]" EnableSSL="True" From="[Config(&quot;username&quot;).ToString]" sap2010:WorkflowViewState.IdRef="SendMail_1" IsBodyHtml="False" Name="Ui Bot" Password="[Config(&quot;password&quot;).ToString]" Port="587" SecureConnection="StartTls" Server="smtp.office365.com" Subject="[&quot;Welcome &quot; + row(&quot;FirstName&quot;).ToString]" To="heatwaveqc@gmail.com">
+                            <ui:SendMail.Files>
+                              <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
+                            </ui:SendMail.Files>
+                          </ui:SendMail>
+                        </Sequence>
+                      </ActivityAction>
+                    </ui:ForEachRow.Body>
+                  </ui:ForEachRow>
+                  <ui:CloseTab Browser="{x:Null}" DisplayName="Close Tab" sap2010:WorkflowViewState.IdRef="CloseTab_2" />
+                </Sequence>
+              </ActivityAction>
+            </ui:OpenBrowser.Body>
+          </ui:OpenBrowser>
+          <FlowStep.Next>
+            <FlowStep x:Name="__ReferenceID2" sap2010:WorkflowViewState.IdRef="FlowStep_4">
+              <ui:WriteRange AddHeaders="True" DataTable="[dt_Customers]" DisplayName="Write Range" sap2010:WorkflowViewState.IdRef="WriteRange_1" SheetName="Sheet1" StartingCell="A1" WorkbookPath="Customer.xlsx" />
+            </FlowStep>
+          </FlowStep.Next>
+        </FlowStep>
+      </FlowStep.Next>
+    </FlowStep>
     <x:Reference>__ReferenceID0</x:Reference>
-    <x:Reference>__ReferenceID1</x:Reference>
+    <FlowStep x:Name="__ReferenceID3" sap2010:WorkflowViewState.IdRef="FlowStep_3">
+      <Sequence DisplayName="initialize data table" sap2010:WorkflowViewState.IdRef="Sequence_5">
+        <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="FirstName" DataTable="[dt_Customers]" DisplayName="Add First Name" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_1" MaxLength="100" Unique="False" />
+        <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="LastName" DataTable="[dt_Customers]" DisplayName="Add Last Name" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_2" MaxLength="100" Unique="False" />
+        <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="eMail" DataTable="[dt_Customers]" DisplayName="Add eMail" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_3" MaxLength="100" Unique="False" />
+        <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="PhoneNumber" DataTable="[dt_Customers]" DisplayName="Add Phone Number" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_4" MaxLength="100" Unique="False" />
+        <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="Address" DataTable="[dt_Customers]" DisplayName="Add Address" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_5" MaxLength="100" Unique="False" />
+        <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="Company Name" DataTable="[dt_Customers]" DisplayName="Add Company Name" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_6" MaxLength="100" Unique="False" />
+        <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="Job Title" DataTable="[dt_Customers]" DisplayName="Add Job Title" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_7" MaxLength="100" Unique="False" />
+        <ui:AddDataColumn x:TypeArguments="x:Object" Column="{x:Null}" DefaultValue="{x:Null}" AllowDBNull="True" AutoIncrement="False" ColumnName="Status" DataTable="[dt_Customers]" DisplayName="Add Status" sap2010:WorkflowViewState.IdRef="AddDataColumn`1_8" MaxLength="100" Unique="False" />
+      </Sequence>
+      <FlowStep.Next>
+        <x:Reference>__ReferenceID1</x:Reference>
+      </FlowStep.Next>
+    </FlowStep>
     <x:Reference>__ReferenceID2</x:Reference>
-    <x:Reference>__ReferenceID3</x:Reference>
+    <FlowStep sap2010:WorkflowViewState.IdRef="FlowStep_6">
+      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_9">
+        <ui:ReadTextFile Content="[configText]" DisplayName="Read Text File" FileName="config.txt" sap2010:WorkflowViewState.IdRef="ReadTextFile_2" />
+        <ui:DeserializeJson x:TypeArguments="njl:JObject" DisplayName="Deserialize JSON" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_1" JsonObject="[Config]" JsonString="[configText]" />
+      </Sequence>
+      <FlowStep.Next>
+        <x:Reference>__ReferenceID3</x:Reference>
+      </FlowStep.Next>
+    </FlowStep>
     <x:Reference>__ReferenceID4</x:Reference>
-    <sads:DebugSymbol.Symbol>dzpDOlxyZXZhdHVyZVxoZXJyb25GaXJzdFJlcG9cVWlQYXRoXEF1dG9DaGFsbGFuZ2VcTWFpbi54YW1sngFFA58DDwIBAUc4R0sCAQRPM082AgEDUDNQNgIBAlcJWhQDAcABXQ1mGAMBnwFpEbMCIgIBN7YCFYsDJgIBC44DGY4D4gECAQVYC1iZAQMBxgFZC1nEAQMBwQFeD16zAgMBvAFfD1+xAgMBuAFgD2CqAgMBtAFhD2G3AgMBsAFiD2KuAgMBrAFjD2O4AgMBqAFkD2SyAgMBpAFlD2WsAgMBoAFpygFp6QEDAZ4BbxewAiICATi2AtABtgLqAQIBNrwCG4gDJgIBDI4DvgGOA8IBAgEKjgNEjgNUAgEIjgOoAY4DsAECAQeOA9ABjgPfAQIBBlhZWGUDAckBWCRYMgMBxwFZswFZwQEDAcQBWZ0BWacBAwHCAV6aAV6lAQMBvwFesAFewAEDAb0BX5oBX6QBAwG7AV+vAV+/AQMBuQFgmgFgoQEDAbcBYKwBYLwBAwG1AWGaAWGnAQMBswFhsgFhwgEDAbEBYpoBYqMBAwGvAWKuAWK+AQMBrQFjmgFjqAEDAasBY7MBY8MBAwGpAWSaAWSlAQMBpwFksAFkwAEDAaUBZZoBZaIBAwGjAWWtAWW9AQMBoQFzGa4CIQIBOq8CGa8CgAECATm9Ah2GAy0CAQ6HAx2HA4QBAgENdButAiYCAT1zVHNmAgE7vQJOvQJeAgE0wwIjgwMuAgEPdR18JgMBmgF9HekBKAIBZeoBHaMCKAIBSKQCHaQCugECAUOlAh2sAiYCAT7EAiXIAjMCATHJAiXNAjMCAS7OAiXSAjMCASvTAiXXAjMCASjYAiXcAjMCASXdAiXhAjMCASLiAiXmAjMCAR/nAiX1AjACAR32AiX9Ai4CARr+AiWCAzMCARB6SnpfAwGdAXdLd1MDAZsBggEfiQEtAwGWAYoBH5EBLQMBkgGSAR+ZASgDAY0BmgEfoQEtAwGJAaIBH6kBKAMBhAGqAR+xAS0DAYABsgEfuQEtAgF8ugEfwQEtAgF4wgEfyQEoAgFzygEf0QEoAgFu0gEf2QEoAgFo2gEf6AEqAgFm6wEf8gEoAgFh8wEf+gEoAgFd+wEfggIoAgFZgwIfigIoAgFViwIfkgIoAgFRkwIfmgIoAgFNmwIfogIoAgFJpAJIpAJSAgFGpAJdpAJtAgFEqgJHqgJUAgFBpwJIpwJRAgE/xALWAcQC/QECATLGArgBxgLmAQIBM8kC1QHJAvsBAgEvywK4AcsC5QECATDOAtIBzgL1AQIBLNACuAHQAuIBAgEt0wLYAdMCgQICASnVArgB1QLoAQIBKtgC1AHYAvkBAgEm2gK4AdoC5AECASfdAtgB3QKCAgIBI98CuAHfAugBAgEk4gLVAeIC/AECASDkArgB5ALlAQIBIfMCuAHzAuUBAgEe+wJQ+wJeAgEc+AJR+AJgAgEb/gLVBf4C6wUCARn+AoAB/gKxAgIBGP4CkwX+AtEFAgEX/gKdA/4CxgMCARb+At0C/gKGAwIBFf4CzQT+AtIEAgEU/gL2BP4CigUCARP+Ap4E/gLHBAIBEv4CjAT+ApQEAgERhwFLhwFYAwGXAYQBsgGEAeEBAwGZAY8BS48BUgMBkwGMAbIBjAHWAQMBlQGXAUqXAWADAZABlAFLlAFSAwGOAZ8BS58BVAMBigGcAbIBnAHvAgMBjAGnAUqnAVgDAYcBpAFLpAFUAwGFAa8BS68BVQMBgQGsAbIBrAHWAQMBgwG3AUu3AVUCAX20AbIBtAHiAQIBf78BS78BWAIBebwBsgG8AeIBAgF7xwFMxwFiAgF2xAFNxAFWAgF0zwFKzwFWAgFxzAFLzAFWAgFv1wFK1wFlAgFr1AFL1AFVAgFp5gGyAeYB3QECAWfwAUrwAVUCAWPtAUvtAWACAWL4AUr4AVQCAV/1AUv1AV8CAV6AAkqAAlECAVv9AUv9AVwCAVqIAkqIAlcCAVeFAkuFAmICAVaQAkqQAlMCAVONAkuNAl4CAVKYAkqYAlcCAU+VAkuVAmMCAU6gAkqgAlQCAUudAkudAmACAUo=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>dzpDOlxyZXZhdHVyZVxoZXJyb25GaXJzdFJlcG9cVWlQYXRoXEF1dG9DaGFsbGFuZ2VcTWFpbi54YW1sC0UDrwMPAgEBRzhHSwIBBE8zTzYCAQNQM1A2AgECVwlkFAIBBVlUWXgCAQZbC2IUAgEKYwtj0QECAQdgNmA7AgENXTddSgIBC2NxY5ABAgEI</sads:DebugSymbol.Symbol>
   </Flowchart>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="ReadTextFile_2" sap:VirtualizedContainerService.HintSize="314,59">
+      <sap2010:ViewStateData Id="Assign_27" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="MessageBox_1" sap:VirtualizedContainerService.HintSize="314,59" />
+      <sap2010:ViewStateData Id="Sequence_11" sap:VirtualizedContainerService.HintSize="336,283">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="DeserializeJson`1_1" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="200,51">
+      <sap2010:ViewStateData Id="FlowStep_7">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="AddDataColumn`1_1" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="AddDataColumn`1_2" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="AddDataColumn`1_3" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="AddDataColumn`1_4" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="AddDataColumn`1_5" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="AddDataColumn`1_6" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="AddDataColumn`1_7" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="AddDataColumn`1_8" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="200,51">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <av:Point x:Key="ShapeLocation">0,84.02</av:Point>
+            <av:Size x:Key="ShapeSize">200,51</av:Size>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
@@ -532,7 +535,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="OpenBrowser_2" sap:VirtualizedContainerService.HintSize="414,2165">
+      <sap2010:ViewStateData Id="OpenBrowser_2" sap:VirtualizedContainerService.HintSize="200,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -572,6 +575,21 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="AddDataColumn`1_1" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="AddDataColumn`1_2" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="AddDataColumn`1_3" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="AddDataColumn`1_4" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="AddDataColumn`1_5" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="AddDataColumn`1_6" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="AddDataColumn`1_7" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="AddDataColumn`1_8" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="200,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="FlowStep_3">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -581,26 +599,42 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="FlowStep_6">
+      <sap2010:ViewStateData Id="ReadTextFile_2" sap:VirtualizedContainerService.HintSize="314,59">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">200,127.5</av:Point>
-            <av:Size x:Key="ShapeSize">200,51</av:Size>
-            <av:PointCollection x:Key="ConnectorLocation">300,178.5 300,224.5</av:PointCollection>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Flowchart_1" sap:VirtualizedContainerService.HintSize="614,636">
+      <sap2010:ViewStateData Id="DeserializeJson`1_1" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="200,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="FlowStep_6">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">410,224.5</av:Point>
+            <av:Size x:Key="ShapeSize">200,51</av:Size>
+            <av:PointCollection x:Key="ConnectorLocation">510,275.5 510,374.5 180,374.5 180,194.5 300,194.5 300,224.5</av:PointCollection>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Flowchart_1" sap:VirtualizedContainerService.HintSize="624,636">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
             <av:Point x:Key="ShapeLocation">270,2.5</av:Point>
             <av:Size x:Key="ShapeSize">60,75</av:Size>
-            <av:PointCollection x:Key="ConnectorLocation">300,77.5 300,127.5</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">270,40 240,40 240,109.52 200,109.52</av:PointCollection>
+            <x:Double x:Key="Width">610</x:Double>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="654,716" />
+      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="664,716" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
